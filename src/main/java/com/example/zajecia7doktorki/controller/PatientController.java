@@ -8,6 +8,7 @@ import com.example.zajecia7doktorki.dto.AppointmentDTO;
 import com.example.zajecia7doktorki.dto.PatientDTO;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.PatientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class PatientController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/add")
-    public ResponseEntity<PatientDTO> savePatient(@RequestBody PatientCommand patientCommand) {
+    public ResponseEntity<PatientDTO> savePatient(@Valid @RequestBody PatientCommand patientCommand) {
         return new ResponseEntity<>(modelMapper
                 .map(patientService.createPatient(modelMapper
                         .map(patientCommand, Patient.class)), PatientDTO.class), HttpStatus.CREATED);
@@ -35,6 +36,7 @@ public class PatientController {
     public ResponseEntity<PatientDTO> findById(@PathVariable("id") Long id) {
         return new ResponseEntity<>(modelMapper.map(patientService.getPatient(id), PatientDTO.class), HttpStatus.OK);
     }
+
     @GetMapping("/getAll")
     public ResponseEntity<List<PatientDTO>> getPatients() {
         List<Patient> patients = patientService.getAllPatients();
@@ -54,16 +56,14 @@ public class PatientController {
         patientService.deletePatient(id);
         return HttpStatus.OK;
     }
-    @PostMapping("/appointments/makeAppointment")
-    public ResponseEntity<AppointmentDTO> createAppointment(
-            @PathVariable("patientId") Long patientId,
-            @RequestParam("doctorId") Long doctorId,
-            @RequestBody AppointmentCommand appointmentCommand
-    ) {
-        appointmentCommand.setPatientId(patientId);
-        appointmentCommand.setDoctorId(doctorId);
-        Appointment appointment = appointmentService.createAppointment(appointmentCommand);
-        return new ResponseEntity<>(modelMapper.map(appointment, AppointmentDTO.class), HttpStatus.CREATED);
+
+    @PostMapping("/{patientId}/makeAppointment/{doctorId}")
+    public ResponseEntity<AppointmentDTO> createAppointment(@PathVariable("patientId") Long patientId, @PathVariable("doctorId") Long doctorId,
+                                                            @RequestBody AppointmentCommand appointmentCommand) {
+
+        Appointment appointment = modelMapper.map(appointmentCommand, Appointment.class);
+
+        return new ResponseEntity<>(modelMapper.map(appointmentService.createAppointment(appointment, patientId, doctorId), AppointmentDTO.class), HttpStatus.CREATED);
     }
 
     @GetMapping("/appointments/{patientId}")

@@ -1,16 +1,16 @@
-package com.example.zajecia7doktorki.command;
+package com.example.zajecia7doktorki.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
-@Getter
+import java.util.Map;
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentCommand {
-    private LocalDate date;
+public class ValidationErrorDTO {
+    private Map<String, String> errors;
 
 }

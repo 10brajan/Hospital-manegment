@@ -6,16 +6,23 @@ import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
 import com.example.zajecia7doktorki.dto.DoctorDTO;
 import com.example.zajecia7doktorki.dto.PatientDTO;
+import com.example.zajecia7doktorki.dto.ValidationErrorDTO;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.DoctorService;
 import com.example.zajecia7doktorki.service.PatientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +33,14 @@ public class DoctorController {
     private final ModelMapper modelMapper;
 
     @PostMapping("/add")
-    public ResponseEntity<DoctorDTO> saveDoctor(@RequestBody DoctorCommand doctorCommand) {
+    public ResponseEntity<?> saveDoctor(@Valid @RequestBody DoctorCommand doctorCommand, BindingResult result) {
+        if (result.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+            return new ResponseEntity<>(new ValidationErrorDTO(errorMap), HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(modelMapper
                 .map(doctorService.createDoctor(modelMapper
                         .map(doctorCommand, Doctor.class)), DoctorDTO.class), HttpStatus.CREATED);

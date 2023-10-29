@@ -20,6 +20,9 @@
             <column name="age" type="int">
                 <constraints nullable="false"/>
             </column>
+            <column name="pesel" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

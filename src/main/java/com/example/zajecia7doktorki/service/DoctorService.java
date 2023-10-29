@@ -5,8 +5,8 @@ import com.example.zajecia7doktorki.domain.Appointment;
 import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
 import com.example.zajecia7doktorki.exception.DoctorNotFoundException;
+import com.example.zajecia7doktorki.exception.DuplicateEntityException;
 import com.example.zajecia7doktorki.repository.DoctorRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,12 +18,22 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DoctorService {
     private final DoctorRepository doctorRepository;
+
     public Doctor getDoctor(Long id) {
         return doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
     }
-    public List<Doctor> getAllDoctors() {return doctorRepository.findAll();}
-    public Doctor createDoctor(Doctor doctor) {return doctorRepository.save(doctor);}
+
+    public Doctor createDoctor(Doctor doctor) {
+        if(doctorRepository.findByPesel(doctor.getPesel()).isPresent()) {
+            throw new DuplicateEntityException("Doktor z takim PESELem już istnieje!");
+        }
+        return doctorRepository.save(doctor);
+    }
+
+    public List<Doctor> getAllDoctors() {
+        return doctorRepository.findAll();
+    }
 
     public Doctor updateDoctor(Long id, DoctorCommand doctorCommand) {
         Doctor doctorToUpdate = doctorRepository.findById(id)
@@ -40,9 +50,10 @@ public class DoctorService {
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
         doctorRepository.delete(doctorToDelete);
     }
+
     public List<Patient> getDoctorPatients(Long doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId)
-                .orElseThrow(() -> new EntityNotFoundException("Nie znaleziono lekarza o podanym ID: " + doctorId));
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
 
         List<Appointment> doctorAppointments = doctor.getAppointments();
         List<Patient> patients = new ArrayList<>();
@@ -50,7 +61,6 @@ public class DoctorService {
         for (Appointment appointment : doctorAppointments) {
             patients.add(appointment.getPatient());
         }
-
         return patients;
     }
 

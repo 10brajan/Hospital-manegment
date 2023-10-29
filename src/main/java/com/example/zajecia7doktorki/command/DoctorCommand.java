@@ -18,5 +18,6 @@ public class DoctorCommand {
     private String surname;
     private String specialization;
     private int age;
+    private String pesel;
 
 }
