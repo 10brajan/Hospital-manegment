@@ -4,6 +4,7 @@ import com.example.zajecia7doktorki.command.DoctorCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
 import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
+import com.example.zajecia7doktorki.exception.DoctorNotFoundException;
 import com.example.zajecia7doktorki.repository.DoctorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +20,14 @@ public class DoctorService {
     private final DoctorRepository doctorRepository;
     public Doctor getDoctor(Long id) {
         return doctorRepository.findById(id)
-                .orElseThrow(); //TODO DODAC WYJATEK
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
     }
     public List<Doctor> getAllDoctors() {return doctorRepository.findAll();}
     public Doctor createDoctor(Doctor doctor) {return doctorRepository.save(doctor);}
 
     public Doctor updateDoctor(Long id, DoctorCommand doctorCommand) {
         Doctor doctorToUpdate = doctorRepository.findById(id)
-                .orElseThrow(); //TODO DODAC WYJATEK
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
         Optional.ofNullable(doctorCommand.getName()).ifPresent(doctorToUpdate::setName);
         Optional.ofNullable(doctorCommand.getSurname()).ifPresent(doctorToUpdate::setSurname);
         Optional.of(doctorCommand.getAge()).filter(age -> age > 0).ifPresent(doctorToUpdate::setAge);
@@ -36,7 +37,7 @@ public class DoctorService {
 
     public void deleteDoctor(Long id) {
         Doctor doctorToDelete = doctorRepository.findById(id)
-                .orElseThrow(); //TODO DODAC WYJATEK
+                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
         doctorRepository.delete(doctorToDelete);
     }
     public List<Patient> getDoctorPatients(Long doctorId) {

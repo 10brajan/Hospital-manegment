@@ -5,6 +5,7 @@ import com.example.zajecia7doktorki.command.PatientCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
 import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
+import com.example.zajecia7doktorki.exception.PatientNotFoundException;
 import com.example.zajecia7doktorki.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +37,7 @@ public class PatientService {
 
     public void deletePatient(Long id) {
         Patient patientToDelete = patientRepository.findById(id)
-                .orElseThrow(); //TODO DODAC WYJATEK
+                .orElseThrow(() -> new PatientNotFoundException("Patient with this id does not exist")); //TODO DODAC WYJATEK
         patientRepository.delete(patientToDelete);
     }
     public List<Appointment> getPatientAppointments(Long patientId) {
