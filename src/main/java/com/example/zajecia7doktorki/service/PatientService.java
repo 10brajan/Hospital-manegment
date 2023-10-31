@@ -3,7 +3,7 @@ package com.example.zajecia7doktorki.service;
 import com.example.zajecia7doktorki.command.PatientCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
 import com.example.zajecia7doktorki.domain.Patient;
-import com.example.zajecia7doktorki.exception.DuplicateEntityException;
+import com.example.zajecia7doktorki.exception.PatientAlreadyExistsException;
 import com.example.zajecia7doktorki.exception.PatientNotFoundException;
 import com.example.zajecia7doktorki.repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class PatientService {
 
     public Patient createPatient(Patient patient) {
         if (patientRepository.findByPesel(patient.getPesel()).isPresent()) {
-            throw new DuplicateEntityException("Patient with this pesel already exists");
+            throw new PatientAlreadyExistsException("Patient with this pesel already exists");
         }
         return patientRepository.save(patient);
     }

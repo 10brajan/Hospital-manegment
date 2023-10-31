@@ -7,20 +7,19 @@ import com.example.zajecia7doktorki.dto.DoctorDTO;
 import com.example.zajecia7doktorki.dto.PatientDTO;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.DoctorService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @RestController
-@Validated
 @RequiredArgsConstructor
 @RequestMapping("/hospital/doctors")
 public class DoctorController {
@@ -65,10 +64,10 @@ public class DoctorController {
     }
 
     @GetMapping("/{doctorId}/patients")
-    public ResponseEntity<List<PatientDTO>> getDoctorPatients(@PathVariable("doctorId") Long doctorId) {
-        List<Patient> patients = doctorService.getDoctorPatients(doctorId);
+    public ResponseEntity<Set<PatientDTO>> getDoctorPatients(@PathVariable("doctorId") Long doctorId) {
+        Set<Patient> patients = doctorService.getDoctorPatients(doctorId);
         return new ResponseEntity<>(patients.stream()
                 .map(patient -> modelMapper.map(patient, PatientDTO.class))
-                .toList(), HttpStatus.OK);
+                .collect(Collectors.toSet()), HttpStatus.OK);
     }
 }

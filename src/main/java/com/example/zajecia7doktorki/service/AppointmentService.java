@@ -21,15 +21,6 @@ public class AppointmentService {
     private final PatientService patientService;
     private final DoctorService doctorService;
 
-    public Appointment getAppointment(Long id) {
-        return appointmentRepository.findById(id)
-                .orElseThrow();
-    }
-
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
-    }
-
 
     public Appointment createAppointment(Appointment appointment, Long patientId, Long doctorId) {
         Patient patient = patientService.getPatient(patientId);
@@ -40,6 +31,7 @@ public class AppointmentService {
         if (appointmentRepository.existsByPatientAndDoctorAndDate(patient, doctor, appointment.getDate())) {
             throw new AppointmentConflictException("Patient is already signed to this appointment");
         }
+//      zastosowac budowe tenansy "? :"
         return appointmentRepository.save(appointment);
     }
 
@@ -58,7 +50,8 @@ public class AppointmentService {
         Appointment appointmentToUpdate = appointmentRepository.findById(id)
                 .orElseThrow(() -> new AppointmentNotFoundException("Appointment with this id does not exist"));
 
-        Optional.ofNullable(appointmentCommand.getDate()).ifPresent(appointmentToUpdate::setDate);
+        Optional.ofNullable(appointmentCommand.getDate())
+                .ifPresent(appointmentToUpdate::setDate);
 
         return appointmentRepository.save(appointmentToUpdate);
     }

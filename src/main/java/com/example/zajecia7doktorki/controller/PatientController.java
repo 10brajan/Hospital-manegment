@@ -8,7 +8,7 @@ import com.example.zajecia7doktorki.dto.AppointmentDTO;
 import com.example.zajecia7doktorki.dto.PatientDTO;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.PatientService;
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/hospital/patients")
+//@RequestMapping("/api/v1/patients")
 public class PatientController {
     private final PatientService patientService;
     private final AppointmentService appointmentService;

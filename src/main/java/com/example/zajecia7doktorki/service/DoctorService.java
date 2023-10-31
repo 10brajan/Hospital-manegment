@@ -4,15 +4,13 @@ import com.example.zajecia7doktorki.command.DoctorCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
 import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
+import com.example.zajecia7doktorki.exception.DoctorAlreadyExistsException;
 import com.example.zajecia7doktorki.exception.DoctorNotFoundException;
-import com.example.zajecia7doktorki.exception.DuplicateEntityException;
 import com.example.zajecia7doktorki.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +24,9 @@ public class DoctorService {
 
     public Doctor createDoctor(Doctor doctor) {
         if (doctorRepository.findByPesel(doctor.getPesel()).isPresent()) {
-            throw new DuplicateEntityException("Doctor with this pesel already exists");
+            throw new DoctorAlreadyExistsException("Doctor with this pesel already exists");
         }
+        //tenansy
         return doctorRepository.save(doctor);
     }
 
@@ -38,10 +37,14 @@ public class DoctorService {
     public Doctor updateDoctor(Long id, DoctorCommand doctorCommand) {
         Doctor doctorToUpdate = doctorRepository.findById(id)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
-        Optional.ofNullable(doctorCommand.getName()).ifPresent(doctorToUpdate::setName);
-        Optional.ofNullable(doctorCommand.getSurname()).ifPresent(doctorToUpdate::setSurname);
-        Optional.of(doctorCommand.getAge()).filter(age -> age > 0).ifPresent(doctorToUpdate::setAge);
-        Optional.ofNullable(doctorCommand.getSpecialization()).ifPresent(doctorToUpdate::setSpecialization);
+        Optional.ofNullable(doctorCommand.getName())
+                .ifPresent(doctorToUpdate::setName);
+        Optional.ofNullable(doctorCommand.getSurname())
+                .ifPresent(doctorToUpdate::setSurname);
+        Optional.of(doctorCommand.getAge()).filter(age -> age > 0)
+                .ifPresent(doctorToUpdate::setAge);
+        Optional.ofNullable(doctorCommand.getSpecialization())
+                .ifPresent(doctorToUpdate::setSpecialization);
         return doctorRepository.save(doctorToUpdate);
     }
 
@@ -51,16 +54,15 @@ public class DoctorService {
         doctorRepository.delete(doctorToDelete);
     }
 
-    public List<Patient> getDoctorPatients(Long doctorId) {
+    public Set<Patient> getDoctorPatients(Long doctorId) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
 
         List<Appointment> doctorAppointments = doctor.getAppointments();
-        List<Patient> patients = new ArrayList<>();
+        Set<Patient> patients = new HashSet<>();
 
-        for (Appointment appointment : doctorAppointments) {
-            patients.add(appointment.getPatient());
-        }
+        doctorAppointments.forEach(appointment -> patients.add(appointment.getPatient()));
+//        .forEach
         return patients;
     }
 
