@@ -1,13 +1,12 @@
 package com.example.zajecia7doktorki.command;
 
-import com.example.zajecia7doktorki.domain.Appointment;
-import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor

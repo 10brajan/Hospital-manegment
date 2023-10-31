@@ -25,8 +25,8 @@ public class DoctorService {
     }
 
     public Doctor createDoctor(Doctor doctor) {
-        if(doctorRepository.findByPesel(doctor.getPesel()).isPresent()) {
-            throw new DuplicateEntityException("Doktor z takim PESELem już istnieje!");
+        if (doctorRepository.findByPesel(doctor.getPesel()).isPresent()) {
+            throw new DuplicateEntityException("Doctor with this pesel already exists");
         }
         return doctorRepository.save(doctor);
     }

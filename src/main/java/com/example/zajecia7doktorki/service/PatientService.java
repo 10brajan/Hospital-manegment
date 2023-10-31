@@ -1,9 +1,7 @@
 package com.example.zajecia7doktorki.service;
 
-import com.example.zajecia7doktorki.command.DoctorCommand;
 import com.example.zajecia7doktorki.command.PatientCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
-import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
 import com.example.zajecia7doktorki.exception.DuplicateEntityException;
 import com.example.zajecia7doktorki.exception.PatientNotFoundException;
@@ -30,7 +28,7 @@ public class PatientService {
 
     public Patient createPatient(Patient patient) {
         if (patientRepository.findByPesel(patient.getPesel()).isPresent()) {
-            throw new DuplicateEntityException("Pacjent z takim PESELem już istnieje!");
+            throw new DuplicateEntityException("Patient with this pesel already exists");
         }
         return patientRepository.save(patient);
     }

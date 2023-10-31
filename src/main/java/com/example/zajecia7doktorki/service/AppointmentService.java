@@ -20,11 +20,15 @@ public class AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final PatientService patientService;
     private final DoctorService doctorService;
+
     public Appointment getAppointment(Long id) {
         return appointmentRepository.findById(id)
                 .orElseThrow();
     }
-    public List<Appointment> getAllAppointments() {return appointmentRepository.findAll();}
+
+    public List<Appointment> getAllAppointments() {
+        return appointmentRepository.findAll();
+    }
 
 
     public Appointment createAppointment(Appointment appointment, Long patientId, Long doctorId) {
@@ -34,7 +38,7 @@ public class AppointmentService {
         appointment.setDoctor(doctor);
 
         if (appointmentRepository.existsByPatientAndDoctorAndDate(patient, doctor, appointment.getDate())) {
-            throw new AppointmentConflictException("Pacjent jest już zapisany na tę wizytę.");
+            throw new AppointmentConflictException("Patient is already signed to this appointment");
         }
         return appointmentRepository.save(appointment);
     }

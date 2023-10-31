@@ -9,22 +9,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class Patient {
-    //Pacjent(id, name, surname, age, pesel, wizyty)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 20, message = "Your name should contains between 3 to 20 letters")
+
     private String name;
-    @Size(min = 3, max = 20)
+    @Size(min = 3, max = 20, message = "Your surname should contains between 3 to 20 letters")
     private String surname;
     private int age;
-    @Pattern(regexp = "^[0-9]{11}$", message = "PESEL musi składać się z 11 cyfr")
+    @Pattern(regexp = "^[0-9]{11}$", message = "PESEL must be at least 11 letters long")
     private String pesel;
 
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

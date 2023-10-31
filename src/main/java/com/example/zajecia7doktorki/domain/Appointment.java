@@ -14,7 +14,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Entity
 public class Appointment {
-    //Appointment(patientId, DoctorId, date)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,6 +1,5 @@
 package com.example.zajecia7doktorki.repository;
 
-import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 
