@@ -9,12 +9,10 @@ import java.util.Set;
 
 @Configuration
 public class ApplicationConfig {
-
     @Bean
     public ModelMapper modelMapper(Set<Converter> converters) {
         ModelMapper modelMapper = new ModelMapper();
         converters.forEach(modelMapper::addConverter);
         return modelMapper;
     }
-
 }
