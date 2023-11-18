@@ -1,4 +1,4 @@
-package com.example.zajecia7doktorki.config.auditingListener;
+package com.example.zajecia7doktorki.config.listener;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -20,7 +20,6 @@ public class PatientDTO {
 
     private String pesel;
 
-
     private Role role;
 
     private String login;

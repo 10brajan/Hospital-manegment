@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.APPLICATION_JSON_MEDIA_TYPE;
+
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
@@ -23,9 +25,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                     .errors(String.valueOf(httpServletRequest.getAttribute("expired")))
                     .build();
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-            httpServletResponse.setContentType("application/json");
+            httpServletResponse.setContentType(APPLICATION_JSON_MEDIA_TYPE);
             httpServletResponse.setCharacterEncoding("UTF-8");
-            httpServletResponse.getWriter().write(mapper.writeValueAsString(apiError));
+            httpServletResponse.getWriter()
+                    .write(mapper.writeValueAsString(apiError));
         }
     }
 }

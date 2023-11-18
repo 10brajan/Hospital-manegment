@@ -64,62 +64,70 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity
-                .csrf() //> do poczytania co to jest
-                .disable()
-                .authorizeRequests((authz) -> {
-                            try {
-                                authz
-//                                        .antMatchers(HttpMethod.POST, "/api/v1/doctors/**").hasAnyAuthority("ADMIN", "USER")
-//                                        .antMatchers(HttpMethod.GET, "./.sdassd").hasAnyAuthority("USER")
-//                                        .antMatchers(HttpMethod.GET, "/api/v1/doctors").hasAnyRole("USER")
-//                                        .antMatchers(HttpMethod.GET, DOCTORS_URL).permitAll()
-//                                        .antMatchers(HttpMethod.GET, "/api/v1/doctors/**/patients").permitAll()
-//                                        .antMatchers(HttpMethod.POST, "/api/v1/doctors").permitAll()
-//                                        .antMatchers(HttpMethod.DELETE, DOCTORS_URL).permitAll()
-//                                        .antMatchers(HttpMethod.DELETE, "/api/v1/doctors/**/appointments/cancel/**").permitAll()
-//                                        .antMatchers(HttpMethod.PUT, DOCTORS_URL).permitAll()
-//                                        .antMatchers(HttpMethod.GET, "/api/v1/patients").permitAll()
-//                                        .antMatchers(HttpMethod.GET, PATIENTS_URL).permitAll()
-//                                        .antMatchers(HttpMethod.GET, "/api/v1/patients/**/appointments").permitAll()
-//                                        .antMatchers(HttpMethod.POST, "/api/v1/patients").permitAll()
-//                                        .antMatchers(HttpMethod.PUT, "/api/v1/patients/**/makeAppointment/**").permitAll()
-//                                        .antMatchers(HttpMethod.DELETE, PATIENTS_URL).permitAll()
-//                                        .antMatchers(HttpMethod.PUT, PATIENTS_URL).permitAll()
-//                                        .antMatchers(HttpMethod.POST, "/api/v1/register/**").permitAll()
-                                        .antMatchers(HttpMethod.POST, "/api/v1/register/**").permitAll()
-                                        .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
-                                        .antMatchers(HttpMethod.GET, "/api/v1/admins/***").hasAuthority("ADMIN")
-                                        .antMatchers(HttpMethod.POST, "/api/v1/admins/***").hasAuthority("ADMIN")
-                                        .antMatchers(HttpMethod.PUT, "/api/v1/admins/***").hasAuthority("ADMIN")
-                                        .antMatchers(HttpMethod.DELETE, "/api/v1/admins/***").hasAuthority("ADMIN")
-                                        .antMatchers(HttpMethod.GET, "/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
-                                        .antMatchers(HttpMethod.POST, "/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
-                                        .antMatchers(HttpMethod.PUT, "/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
-                                        .antMatchers(HttpMethod.DELETE, "/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
-                                        .antMatchers(HttpMethod.GET, "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
-                                        .antMatchers(HttpMethod.POST, "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
-                                        .antMatchers(HttpMethod.PUT, "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
-                                        .antMatchers(HttpMethod.DELETE, "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
-                                        .anyRequest()
-                                        .authenticated()
-                                        .and()
-                                        .sessionManagement()
-                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //-> o rodzajach SessionCreationPolicy i jak sie je wykorzystuje
-                                        .and()
-                                        .authenticationProvider(authenticationProvider()) // -> poczytaj o authenticationProvider
-                                        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                                        .exceptionHandling()
-                                        .authenticationEntryPoint(entryPoint)
-                                        .accessDeniedHandler(accessDeniedHandler());
-                            } catch (Exception e) {
-                                log.error("Error occurred with filterChain {}", e.getMessage());
-                                throw new RuntimeException(e);
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) {
+        try {
+            httpSecurity
+                    .csrf() //> do poczytania co to jest
+                    .disable()
+                    .authorizeRequests((authz) -> {
+                                try {
+                                    authz
+    //                                        .antMatchers(HttpMethod.POST, "/api/v1/doctors/**").hasAnyAuthority("ADMIN", "USER")
+    //                                        .antMatchers(HttpMethod.GET, "./.sdassd").hasAnyAuthority("USER")
+    //                                        .antMatchers(HttpMethod.GET, "/api/v1/doctors").hasAnyRole("USER")
+    //                                        .antMatchers(HttpMethod.GET, DOCTORS_URL).permitAll()
+    //                                        .antMatchers(HttpMethod.GET, "/api/v1/doctors/**/patients").permitAll()
+    //                                        .antMatchers(HttpMethod.POST, "/api/v1/doctors").permitAll()
+    //                                        .antMatchers(HttpMethod.DELETE, DOCTORS_URL).permitAll()
+    //                                        .antMatchers(HttpMethod.DELETE, "/api/v1/doctors/**/appointments/cancel/**").permitAll()
+    //                                        .antMatchers(HttpMethod.PUT, DOCTORS_URL).permitAll()
+    //                                        .antMatchers(HttpMethod.GET, "/api/v1/patients").permitAll()
+    //                                        .antMatchers(HttpMethod.GET, PATIENTS_URL).permitAll()
+    //                                        .antMatchers(HttpMethod.GET, "/api/v1/patients/**/appointments").permitAll()
+    //                                        .antMatchers(HttpMethod.POST, "/api/v1/patients").permitAll()
+    //                                        .antMatchers(HttpMethod.PUT, "/api/v1/patients/**/makeAppointment/**").permitAll()
+    //                                        .antMatchers(HttpMethod.DELETE, PATIENTS_URL).permitAll()
+    //                                        .antMatchers(HttpMethod.PUT, PATIENTS_URL).permitAll()
+    //                                        .antMatchers(HttpMethod.POST, "/api/v1/register/**").permitAll()
+                                            .antMatchers(HttpMethod.POST, "/api/v1/register/**").permitAll()
+                                            .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
+                                            .antMatchers("/api/v1/admins/***").hasAuthority("ADMIN")
+    //                                        .antMatchers(HttpMethod.POST, "/api/v1/admins/***").hasAuthority("ADMIN")
+    //                                        .antMatchers(HttpMethod.PUT, "/api/v1/admins/***").hasAuthority("ADMIN")
+    //                                        .antMatchers(HttpMethod.DELETE, "/api/v1/admins/***").hasAuthority("ADMIN")
+                                            .antMatchers("/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
+    //                                        .antMatchers(HttpMethod.POST, "/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
+    //                                        .antMatchers(HttpMethod.PUT, "/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
+    //                                        .antMatchers(HttpMethod.DELETE, "/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
+                                            .antMatchers( "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
+    //                                        .antMatchers(HttpMethod.POST, "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
+    //                                        .antMatchers(HttpMethod.PUT, "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
+    //                                        .antMatchers(HttpMethod.DELETE, "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
+                                            .anyRequest()
+                                            .authenticated()
+                                            .and()
+                                            .sessionManagement()
+                                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //-> o rodzajach SessionCreationPolicy i jak sie je wykorzystuje
+                                            .and()
+                                            .authenticationProvider(authenticationProvider()) // -> poczytaj o authenticationProvider
+                                            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                                            .exceptionHandling()
+                                            .authenticationEntryPoint(entryPoint)
+                                            .accessDeniedHandler(accessDeniedHandler());
+                                } catch (Exception e) {
+                                    log.error("Error occurred with filterChain {}", e.getMessage());
+                                    throw new RuntimeException(e);
+                                }
                             }
-                        }
-                ).httpBasic(Customizer.withDefaults());
-        return httpSecurity.build();
+                    ).httpBasic(Customizer.withDefaults());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            return httpSecurity.build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

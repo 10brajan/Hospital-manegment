@@ -51,7 +51,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             AppointmentNotFoundException.class,
             PatientNotFoundException.class,
             DoctorNotFoundException.class,
-            LoginNotFoundException.class})
+            LoginNotFoundException.class,
+            AdminNotFoundException.class
+    })
     protected ResponseEntity<ApiError> handleNotFoundException(RuntimeException ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
         logger.error(ex.getMessage());
@@ -63,7 +65,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             LoginAlreadyExistsException.class,
             AppointmentConflictException.class,
             DoctorAlreadyExistsException.class,
-            PatientAlreadyExistsException.class})
+            PatientAlreadyExistsException.class
+    })
     protected ResponseEntity<ApiError> handleDuplicateEntityException(RuntimeException ex) {
         ApiError apiError = new ApiError(HttpStatus.CONFLICT, ex.getMessage());
         logger.error(ex.getMessage());

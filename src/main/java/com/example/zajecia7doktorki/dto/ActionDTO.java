@@ -22,7 +22,10 @@ public class ActionDTO {
     private LocalDate createdDate;
 
     private ActionPerformed actionPerformed;
+
     private String oldValue;
+
     private String newValue;
+
     private String changedField;
 }

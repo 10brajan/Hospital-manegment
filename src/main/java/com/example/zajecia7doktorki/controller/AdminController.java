@@ -1,7 +1,15 @@
 package com.example.zajecia7doktorki.controller;
 
+import com.example.zajecia7doktorki.command.AdminUpdateCommand;
+import com.example.zajecia7doktorki.command.DoctorUpdateCommand;
 import com.example.zajecia7doktorki.domain.Action;
+import com.example.zajecia7doktorki.domain.Admin;
+import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.dto.ActionDTO;
+import com.example.zajecia7doktorki.dto.AdminDTO;
+import com.example.zajecia7doktorki.dto.DoctorDTO;
+import com.example.zajecia7doktorki.mapping.ActionMapper;
+import com.example.zajecia7doktorki.mapping.AdminMapper;
 import com.example.zajecia7doktorki.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,7 +25,10 @@ import java.util.List;
 public class AdminController {
 
     private final AdminService adminService;
-    private final ModelMapper modelMapper;
+    @PutMapping
+    public ResponseEntity<AdminDTO> updateAdmin(@RequestBody AdminUpdateCommand adminUpdateCommand) {
+        return new ResponseEntity<>(AdminMapper.INSTANCE.adminEnityToDTO( adminService.updateAdmin(adminUpdateCommand)), HttpStatus.OK);
+    }
 
     @DeleteMapping("/customer/{id}")
     public HttpStatus deleteCustomer(@PathVariable("id") Long id) {
@@ -56,9 +67,9 @@ public class AdminController {
     }
 
     @GetMapping("/actions")
+    //    dodac paginacje tutaj
     public ResponseEntity<List<ActionDTO>> displayActions() {
-        List<Action> actions = adminService.getActions();
-        return new ResponseEntity<>(actions.stream()
-                .map(action -> modelMapper.map(action, ActionDTO.class)).toList() , HttpStatus.OK);
+        return new ResponseEntity<>(adminService.getActions().stream()
+                .map(ActionMapper.INSTANCE::actionEnityToDTO).toList(), HttpStatus.OK);
     }
 }

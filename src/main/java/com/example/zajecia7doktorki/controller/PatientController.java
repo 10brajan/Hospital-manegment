@@ -1,16 +1,16 @@
 package com.example.zajecia7doktorki.controller;
 
 import com.example.zajecia7doktorki.command.AppointmentCommand;
-import com.example.zajecia7doktorki.command.PatientCommand;
+import com.example.zajecia7doktorki.command.PatientUpdateCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
-import com.example.zajecia7doktorki.domain.Customer;
 import com.example.zajecia7doktorki.domain.Patient;
-import com.example.zajecia7doktorki.dto.AppointmentPatientDTO;
+import com.example.zajecia7doktorki.dto.AppointmentDTO;
 import com.example.zajecia7doktorki.dto.PatientDTO;
+import com.example.zajecia7doktorki.mapping.AppointmentMapper;
+import com.example.zajecia7doktorki.mapping.PatientMapper;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.PatientService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,27 +22,27 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/patients")
 public class PatientController {
+
     private final PatientService patientService;
+
     private final AppointmentService appointmentService;
-    private final ModelMapper modelMapper;
 
     @GetMapping("/get")
     public ResponseEntity<PatientDTO> findById() {
-        return new ResponseEntity<>(modelMapper.map(patientService.getPatient(), PatientDTO.class), HttpStatus.OK);
+        return new ResponseEntity<>(PatientMapper.INSTANCE.patientEnityToDTO(patientService.getPatient()), HttpStatus.OK);
     }
 
     @GetMapping
+    //    dodac paginacje tutaj
     public ResponseEntity<List<PatientDTO>> getPatients() {
-        List<Customer> patients = patientService.getAllPatients();
-        return new ResponseEntity<>(patients.stream()
-                .map(patient -> modelMapper
-                        .map(patient, PatientDTO.class)).toList(), HttpStatus.OK);
+        return new ResponseEntity<>(patientService.getAllPatients().stream()
+                .map(patient -> PatientMapper.INSTANCE.patientEnityToDTO((Patient) patient)).toList(), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientCommand patientCommand) {
-        Patient updatedPatient = patientService.updatePatient(patientCommand);
-        return new ResponseEntity<>(modelMapper.map(updatedPatient, PatientDTO.class), HttpStatus.OK);
+    public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientUpdateCommand patientUpdateCommand) {
+        return new ResponseEntity<>(PatientMapper.INSTANCE.patientEnityToDTO
+                (patientService.updatePatient(patientUpdateCommand)), HttpStatus.OK);
     }
 
     @DeleteMapping
@@ -52,11 +52,10 @@ public class PatientController {
     }
 
     @PutMapping("/makeAppointment/{doctorId}")
-    public ResponseEntity<AppointmentPatientDTO> createAppointment(@PathVariable("doctorId") Long doctorId,
+    public ResponseEntity<AppointmentDTO> createAppointment(@PathVariable("doctorId") Long doctorId,
                                                             @RequestBody @Valid AppointmentCommand appointmentCommand) {
-        return new ResponseEntity<>(modelMapper.map(appointmentService.createAppointment(modelMapper
-                        .map(appointmentCommand, Appointment.class), doctorId),
-                AppointmentPatientDTO.class), HttpStatus.CREATED);
+        return new ResponseEntity<>(AppointmentMapper.INSTANCE.appointmentEnityToDTO((appointmentService
+                .createAppointment(AppointmentMapper.INSTANCE.appointmentCommandToAppointmentEntity(appointmentCommand), doctorId))), HttpStatus.CREATED);
     }
 
     @PutMapping("/appointments/cancel/{appointmentId}")
@@ -66,9 +65,9 @@ public class PatientController {
     }
 
     @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentPatientDTO>> getPatientAppointments() {
-        List<Appointment> appointments = patientService.getPatientAppointments();
-        return new ResponseEntity<>(appointments.stream()
-                .map(appointment -> modelMapper.map(appointment, AppointmentPatientDTO.class)).toList(), HttpStatus.OK);
+    //    dodac paginacje tutaj
+    public ResponseEntity<List<AppointmentDTO>> getPatientAppointments() {
+        return new ResponseEntity<>(patientService.getPatientAppointments().stream()
+                .map(AppointmentMapper.INSTANCE::appointmentEnityToDTO).toList(), HttpStatus.OK);
     }
 }

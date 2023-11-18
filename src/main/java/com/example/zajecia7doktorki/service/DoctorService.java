@@ -1,6 +1,7 @@
 package com.example.zajecia7doktorki.service;
 
 import com.example.zajecia7doktorki.command.DoctorCommand;
+import com.example.zajecia7doktorki.command.DoctorUpdateCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
 import com.example.zajecia7doktorki.domain.Customer;
 import com.example.zajecia7doktorki.domain.Doctor;
@@ -25,6 +26,8 @@ import java.util.Set;
 public class DoctorService {
     private static final String DOCTOR = "DOCTOR";
     private static final String DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST = "Doctor with this login does not exist";
+    private static final String LOGIN_DOES_NOT_EXIST = "Login does not exist";
+
 
     private final CustomerRepository customerRepository;
 
@@ -33,7 +36,7 @@ public class DoctorService {
     public Doctor getDoctor() {
         String username = Optional.ofNullable(userDetailsService.getUserDetails())
                 .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
+                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
 
        return customerRepository.findByLogin(username)
                 .filter(Doctor.class::isInstance)
@@ -45,7 +48,7 @@ public class DoctorService {
         return customerRepository.findAllByUserType(DOCTOR);
     }
 
-    public Doctor updateDoctor(DoctorCommand doctorCommand) {
+    public Doctor updateDoctor(DoctorUpdateCommand doctorUpdateCommand) {
 //        Doctor doctorToUpdate = (Doctor) customerRepository.findByIdAndUserType(id, DOCTOR)
 //                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
 
@@ -54,7 +57,7 @@ public class DoctorService {
 
         String username = Optional.ofNullable(userDetailsService.getUserDetails())
                 .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
+                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
 
         Doctor doctorToUpdate = customerRepository.findByLogin(username)
                 .filter(Doctor.class::isInstance)
@@ -62,37 +65,38 @@ public class DoctorService {
                 .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
 
 
-        Optional.ofNullable(doctorCommand.getName())
+        Optional.ofNullable(doctorUpdateCommand.getName())
                 .ifPresent(doctorToUpdate::setName);
-        Optional.ofNullable(doctorCommand.getSurname())
+        Optional.ofNullable(doctorUpdateCommand.getSurname())
                 .ifPresent(doctorToUpdate::setSurname);
-        Optional.of(doctorCommand.getAge()).filter(age -> age > 0)
+        Optional.of(doctorUpdateCommand.getAge()).filter(age -> age > 0)
                 .ifPresent(doctorToUpdate::setAge);
-        Optional.ofNullable(doctorCommand.getSpecialization())
+        Optional.ofNullable(doctorUpdateCommand.getSpecialization())
                 .ifPresent(doctorToUpdate::setSpecialization);
-        Optional.ofNullable(doctorCommand.getLogin())
-                .ifPresent(doctorToUpdate::setLogin);
-        Optional.ofNullable(doctorCommand.getPassword())
-                .ifPresent(doctorToUpdate::setPassword);
+//        Optional.ofNullable(doctorCommand.getLogin())
+//                .ifPresent(doctorToUpdate::setLogin);
+//        Optional.ofNullable(doctorCommand.getPassword())
+//                .ifPresent(doctorToUpdate::setPassword);
         return customerRepository.save(doctorToUpdate);
     }
 
     public void deleteDoctor() {
         String username = Optional.ofNullable(userDetailsService.getUserDetails())
                 .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
+                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
 
         Doctor doctorToDelete = customerRepository.findByLogin(username)
                 .filter(Doctor.class::isInstance)
                 .map(Doctor.class::cast)
                 .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+
         customerRepository.delete(doctorToDelete);
     }
 
     public Set<Patient> getDoctorPatients() {
         String username = Optional.ofNullable(userDetailsService.getUserDetails())
                 .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
+                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
 
         Doctor doctor = customerRepository.findByLogin(username)
                 .filter(Doctor.class::isInstance)
@@ -121,7 +125,7 @@ public class DoctorService {
     public List<Appointment> getDoctorAppointments() {
         String username = Optional.ofNullable(userDetailsService.getUserDetails())
                 .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
+                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
 
         Doctor doctor = customerRepository.findByLogin(username)
                 .filter(Doctor.class::isInstance)

@@ -10,7 +10,6 @@ public class ValidationService {
 
     private final CustomerRepository customerRepository;
 
-
     protected boolean isLoginInDatabase(String login) {
         return customerRepository.findByLogin(login).isPresent();
     }

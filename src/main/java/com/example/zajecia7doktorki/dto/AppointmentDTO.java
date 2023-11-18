@@ -1,6 +1,7 @@
 package com.example.zajecia7doktorki.dto;
 
 import com.example.zajecia7doktorki.model.Status;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,14 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentDoctorDTO {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class AppointmentDTO {
     private LocalDate date;
 
     private PatientAppointmentDTO patient;
+
+    private DoctorAppointmentDTO doctor;
+    //dodac json.include non null
 
     private Status status;
 }

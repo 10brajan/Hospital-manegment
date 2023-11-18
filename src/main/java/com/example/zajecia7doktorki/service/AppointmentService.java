@@ -35,6 +35,7 @@ public class AppointmentService {
 
         Doctor doctor = (Doctor) customerRepository.findByIdAndUserType(doctorId, "DOCTOR")
                 .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
+
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
 
@@ -82,7 +83,7 @@ public class AppointmentService {
                 .map(Patient.class::cast)
                 .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
 
-        if (!appointment.getPatient().getId().equals(patient.getId())) {
+        if (!Objects.equals(appointment.getPatient().getId(), patient.getId())) {
             throw new PermissionDeniedException("Patient can only cancel their own appointments");
         }
 
@@ -103,7 +104,7 @@ public class AppointmentService {
                 .map(Doctor.class::cast)
                 .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
 
-        if (!appointment.getDoctor().getId().equals(doctor.getId())) {
+        if (!Objects.equals(appointment.getDoctor().getId(), doctor.getId())) {
             throw new PermissionDeniedException("Doctor can only cancel their own appointments");
         }
         appointment.setStatus(Status.SUCCESSFUL);

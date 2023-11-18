@@ -22,7 +22,6 @@ public class Patient extends Customer {
     @Enumerated(EnumType.STRING)
     private HealthCondition healthCondition;
 
-
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Appointment> appointments;
 }

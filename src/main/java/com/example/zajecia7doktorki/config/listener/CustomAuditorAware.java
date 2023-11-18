@@ -1,4 +1,4 @@
-package com.example.zajecia7doktorki.config.auditingListener;
+package com.example.zajecia7doktorki.config.listener;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

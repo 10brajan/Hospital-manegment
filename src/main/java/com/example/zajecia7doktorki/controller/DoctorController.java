@@ -1,12 +1,14 @@
 package com.example.zajecia7doktorki.controller;
 
-import com.example.zajecia7doktorki.command.DoctorCommand;
-import com.example.zajecia7doktorki.domain.Appointment;
+import com.example.zajecia7doktorki.command.DoctorUpdateCommand;
 import com.example.zajecia7doktorki.domain.Customer;
 import com.example.zajecia7doktorki.domain.Doctor;
-import com.example.zajecia7doktorki.dto.AppointmentDoctorDTO;
+import com.example.zajecia7doktorki.dto.AppointmentDTO;
 import com.example.zajecia7doktorki.dto.DoctorDTO;
-import com.example.zajecia7doktorki.dto.PatientDTO;
+import com.example.zajecia7doktorki.dto.PatientAppointmentDTO;
+import com.example.zajecia7doktorki.mapping.AppointmentMapper;
+import com.example.zajecia7doktorki.mapping.DoctorMapper;
+import com.example.zajecia7doktorki.mapping.PatientAppointmentMapper;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.DoctorService;
 import lombok.RequiredArgsConstructor;
@@ -26,25 +28,23 @@ import java.util.stream.Collectors;
 public class DoctorController {
     private final DoctorService doctorService;
     private final AppointmentService appointmentService;
-    private final ModelMapper modelMapper;
 
     @GetMapping("/getById")
     public ResponseEntity<DoctorDTO> findById() {
-        return new ResponseEntity<>(modelMapper.map(doctorService.getDoctor(), DoctorDTO.class), HttpStatus.OK);
+        return new ResponseEntity<>(DoctorMapper.INSTANCE.doctorEnityToDTO(doctorService.getDoctor()), HttpStatus.OK);
     }
 
     @GetMapping("/getAll")
+    //    dodac paginacje tutaj
     public ResponseEntity<List<DoctorDTO>> getDoctors() {
-        List<Customer> doctors = doctorService.getAllDoctors();
-        return new ResponseEntity<>(doctors.stream()
-                .map(doctor -> modelMapper
-                        .map(doctor, DoctorDTO.class)).toList(), HttpStatus.OK);
+        return new ResponseEntity<>(doctorService.getAllDoctors().stream()
+                .map(doctor -> DoctorMapper.INSTANCE.doctorEnityToDTO((Doctor) doctor)).toList(), HttpStatus.OK);
     }
 
     @PutMapping
-    public ResponseEntity<DoctorDTO> updateDoctor(@RequestBody DoctorCommand doctorCommand) {
-        Doctor updatedDoctor = doctorService.updateDoctor(doctorCommand);
-        return new ResponseEntity<>(modelMapper.map(updatedDoctor, DoctorDTO.class), HttpStatus.OK);
+    public ResponseEntity<DoctorDTO> updateDoctor(@RequestBody DoctorUpdateCommand doctorUpdateCommand) {
+        return new ResponseEntity<>(DoctorMapper.INSTANCE.doctorEnityToDTO(doctorService.updateDoctor(doctorUpdateCommand)),
+                HttpStatus.OK);
     }
 
     @DeleteMapping
@@ -67,22 +67,23 @@ public class DoctorController {
 
     @PutMapping("/patients/changeHealthCondition/{patientId}")
     public HttpStatus changeHealthCondition(@PathVariable("patientId") Long patientId,
-            @RequestBody String healthCondition) {
+                                            @RequestBody String healthCondition) {
         doctorService.changeHealthCondition(patientId, healthCondition);
         return HttpStatus.OK;
     }
 
     @GetMapping("/patients")
-    public ResponseEntity<Set<PatientDTO>> getDoctorPatients() {
+//    dodac paginacje tutaj
+    public ResponseEntity<Set<PatientAppointmentDTO>> getDoctorPatients() {
         return new ResponseEntity<>(doctorService.getDoctorPatients().stream()
-                .map(patient -> modelMapper.map(patient, PatientDTO.class))
+                .map(PatientAppointmentMapper.INSTANCE::patientAppointmentEnityToDTO)
                 .collect(Collectors.toSet()), HttpStatus.OK);
     }
 
     @GetMapping("/appointments")
-    public ResponseEntity<List<AppointmentDoctorDTO>> getDoctorAppointments() {
-        List<Appointment> appointments = doctorService.getDoctorAppointments();
-        return new ResponseEntity<>(appointments.stream()
-                .map(appointment -> modelMapper.map(appointment, AppointmentDoctorDTO.class)).toList(), HttpStatus.OK);
+    //    dodac paginacje tutaj
+    public ResponseEntity<List<AppointmentDTO>> getDoctorAppointments() {
+        return new ResponseEntity<>(doctorService.getDoctorAppointments().stream()
+                .map(AppointmentMapper.INSTANCE::appointmentEnityToDTO).toList(), HttpStatus.OK);
     }
 }

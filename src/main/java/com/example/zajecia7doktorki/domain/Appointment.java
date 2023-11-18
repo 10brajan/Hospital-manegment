@@ -36,7 +36,7 @@ public class Appointment {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "created_by_id")
+    @JoinColumn(name = "created_by")
     private Customer createdBy;
 
     @ManyToOne

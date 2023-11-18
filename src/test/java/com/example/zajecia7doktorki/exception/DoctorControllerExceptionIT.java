@@ -42,7 +42,7 @@ class DoctorControllerExceptionIT {
 
     @Test
     void shouldThrowValidationMessageWhenSaveDoctorWithInvalidName() throws Exception {
-        DoctorCommand doctorCommand = new DoctorCommand("   ", "szymanski", "Kardiolog", 29, "1111111111");
+        DoctorCommand doctorCommand = new DoctorCommand("   ", "szymanski", "Kardiolog", 29, "1111111111", "brajan", "brajan");
 
         this.mockMvc.perform(post("/api/v1/doctors")
                         .content(objectMapper.writeValueAsString(doctorCommand))
@@ -58,7 +58,7 @@ class DoctorControllerExceptionIT {
 
     @Test
     void shouldThrowValidationMessageWhenSaveDoctorWithInvalidSurname() throws Exception {
-        DoctorCommand doctorCommand = new DoctorCommand("amelia", "sz", "Kardiolog", 29, "1111111111");
+        DoctorCommand doctorCommand = new DoctorCommand("   ", "szymanski", "Kardiolog", 29, "1111111111", "brajan", "brajan");
 
         this.mockMvc.perform(post("/api/v1/doctors")
                         .content(objectMapper.writeValueAsString(doctorCommand))
@@ -74,7 +74,7 @@ class DoctorControllerExceptionIT {
 
     @Test
     void shouldThrowValidationMessageWhenSaveDoctorWithInvalidSpecialization() throws Exception {
-        DoctorCommand doctorCommand = new DoctorCommand("amelia", "szymanski", " ", 29, "1111111111");
+        DoctorCommand doctorCommand = new DoctorCommand("   ", "szymanski", "Kardiolog", 29, "1111111111", "brajan", "brajan");
 
         this.mockMvc.perform(post("/api/v1/doctors")
                         .content(objectMapper.writeValueAsString(doctorCommand))
@@ -91,7 +91,7 @@ class DoctorControllerExceptionIT {
 
     @Test
     void shouldThrowValidationMessageWhenSaveDoctorWithInvalidAge() throws Exception {
-        DoctorCommand doctorCommand = new DoctorCommand("amelia", "szymanski", "Kardiolog", 19, "1111111111");
+        DoctorCommand doctorCommand = new DoctorCommand("   ", "szymanski", "Kardiolog", 29, "1111111111", "brajan", "brajan");
 
         this.mockMvc.perform(post("/api/v1/doctors")
                         .content(objectMapper.writeValueAsString(doctorCommand))
@@ -107,7 +107,7 @@ class DoctorControllerExceptionIT {
 
     @Test
     void shouldThrowValidationMessageWhenSaveDoctorWithInvalidPesel() throws Exception {
-        DoctorCommand doctorCommand = new DoctorCommand("amelia", "szymanski", "Kardiolog", 29, "111111");
+        DoctorCommand doctorCommand = new DoctorCommand("   ", "szymanski", "Kardiolog", 29, "1111111111", "brajan", "brajan");
 
         this.mockMvc.perform(post("/api/v1/doctors")
                         .content(objectMapper.writeValueAsString(doctorCommand))
