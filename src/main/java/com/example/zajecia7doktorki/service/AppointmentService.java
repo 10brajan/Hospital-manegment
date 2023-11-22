@@ -15,20 +15,21 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.*;
+
 @Service
 @RequiredArgsConstructor
 public class AppointmentService {
-    private static final String DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST = "Doctor with this login does not exist";
-    private static final String PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST = "Patient with this login does not exist";
 
     private final AppointmentRepository appointmentRepository;
     private final CustomerRepository customerRepository;
-    private final PatientService patientService;
     private final CustomerUserDetailsService userDetailsService;
 
 
     public Appointment createAppointment(Appointment appointment, Long doctorId) {
-        Patient patient = patientService.getPatient();
+        String username = getUsername();
+        Patient patient = getPatient(username);
+
         if (!patient.isAccountNonLocked()) {
             throw new PermissionDeniedException("Your account is locked");
         }
@@ -47,20 +48,10 @@ public class AppointmentService {
     }
 
     public void cancelAppointmentByDoctor(Long appointmentId) {
+        Appointment appointment = getAppointment(appointmentId);
+        String username = getUsername();
+        Doctor doctor = getDoctor(username);
 
-        Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new AppointmentNotFoundException("Appointment with id " + appointmentId + " not found"));
-
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
-
-        Doctor doctor = customerRepository.findByLogin(username)
-                .filter(Doctor.class::isInstance)
-                .map(Doctor.class::cast)
-                .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
-
-//        if (!appointment.getDoctor().getId().equals(doctor.getId())) {
         if (!Objects.equals(appointment.getDoctor().getId(), doctor.getId())) {
             throw new PermissionDeniedException("Doctor can only cancel their own appointments");
         }
@@ -70,18 +61,9 @@ public class AppointmentService {
     }
 
     public void cancelAppointmentByPatient(Long appointmentId) {
-
-        Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new AppointmentNotFoundException("Appointment with id " + appointmentId + " not found"));
-
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
-
-        Patient patient = customerRepository.findByLogin(username)
-                .filter(Patient.class::isInstance)
-                .map(Patient.class::cast)
-                .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+        Appointment appointment = getAppointment(appointmentId);
+        String username = getUsername();
+        Patient patient = getPatient(username);
 
         if (!Objects.equals(appointment.getPatient().getId(), patient.getId())) {
             throw new PermissionDeniedException("Patient can only cancel their own appointments");
@@ -92,17 +74,9 @@ public class AppointmentService {
     }
 
     public void appointmentSuccess(Long appointmentId) {
-        Appointment appointment = appointmentRepository.findById(appointmentId)
-                .orElseThrow(() -> new AppointmentNotFoundException("Appointment with id " + appointmentId + " not found"));
-
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException("Login does not exist"));
-
-        Doctor doctor = customerRepository.findByLogin(username)
-                .filter(Doctor.class::isInstance)
-                .map(Doctor.class::cast)
-                .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+        Appointment appointment = getAppointment(appointmentId);
+        String username = getUsername();
+        Doctor doctor = getDoctor(username);
 
         if (!Objects.equals(appointment.getDoctor().getId(), doctor.getId())) {
             throw new PermissionDeniedException("Doctor can only cancel their own appointments");
@@ -112,8 +86,7 @@ public class AppointmentService {
     }
 
     public Appointment updateAppointment(Long id, AppointmentCommand appointmentCommand) {
-        Appointment appointmentToUpdate = appointmentRepository.findById(id)
-                .orElseThrow(() -> new AppointmentNotFoundException("Appointment with this id does not exist"));
+        Appointment appointmentToUpdate = getAppointment(id);
 
         Optional.ofNullable(appointmentCommand.getDate())
                 .ifPresent(appointmentToUpdate::setDate);
@@ -122,9 +95,33 @@ public class AppointmentService {
     }
 
     public void deleteAppointment(Long id) {
-        Appointment appointmentToDelete = appointmentRepository.findById(id)
-                .orElseThrow(() -> new AppointmentNotFoundException("Appointment with this id does not exist"));
+        Appointment appointmentToDelete = getAppointment(id);
         appointmentRepository.delete(appointmentToDelete);
+    }
+
+    private Appointment getAppointment(Long appointmentId) {
+        return appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppointmentNotFoundException("Appointment with id " + appointmentId + " not found"));
+    }
+
+    private String getUsername() {
+        return Optional.ofNullable(userDetailsService.getUserDetails())
+                .map(UserDetails::getUsername)
+                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
+    }
+
+    private Doctor getDoctor(String username) {
+        return customerRepository.findByLogin(username)
+                .filter(Doctor.class::isInstance)
+                .map(Doctor.class::cast)
+                .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+    }
+
+    private Patient getPatient(String username) {
+        return customerRepository.findByLogin(username)
+                .filter(Patient.class::isInstance)
+                .map(Patient.class::cast)
+                .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
     }
 
 }

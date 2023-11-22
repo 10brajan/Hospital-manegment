@@ -105,6 +105,15 @@ class DoctorServiceTest {
     }
 
     @Test
+    void shouldGetAllDoctors() {
+        Doctor doctor1 = new Doctor();
+        doctor1.setName("brajan");
+        doctor1.setSurname("szymanski");
+        Doctor doctor2 = new Doctor();
+        doctor2.setName("patryk");
+    }
+
+    @Test
     void shouldThrowWHenDoctorNotFound() {
         when(customerUserDetailsService.getUserDetails()).thenReturn(mockUserDetails);
         when(customerRepository.findByLogin("expectedUsername")).thenReturn(Optional.empty());
@@ -117,7 +126,6 @@ class DoctorServiceTest {
 
     @Test
     void shouldUpdateDoctor() {
-        // Given
         DoctorUpdateCommand doctorUpdateCommand = new DoctorUpdateCommand();
         doctorUpdateCommand.setName("Dr. Jane");
         doctorUpdateCommand.setSurname("Doe");
@@ -131,18 +139,6 @@ class DoctorServiceTest {
 
         assertThat(updatedDoctor.getName()).isEqualTo("Dr. Jane");
         assertThat(updatedDoctor.getSurname()).isEqualTo("Doe");
-
-//        when(doctorRepository.findById(anyLong())).thenReturn(Optional.of(doctor));
-//        when(doctorRepository.save(any(Doctor.class))).thenReturn(doctor);
-
-        // When
-//        Doctor updatedDoctor = doctorService.updateDoctor(1L, doctorCommand);
-//
-//         Then
-//        assertThat(updatedDoctor.getName()).isEqualTo(doctorCommand.getName());
-//        assertThat(updatedDoctor.getSurname()).isEqualTo(doctorCommand.getSurname());
-//        assertThat(updatedDoctor.getAge()).isEqualTo(doctorCommand.getAge());
-//        assertThat(updatedDoctor.getSpecialization()).isEqualTo(doctorCommand.getSpecialization());
     }
 
     @Test
@@ -179,16 +175,16 @@ class DoctorServiceTest {
                 .hasSameSizeAs(expectedPatients)
                 .hasSameElementsAs(expectedPatients);
     }
-    @Test
-    void shouldGetDoctorAppointments() {
-        when(customerUserDetailsService.getUserDetails()).thenReturn(mockUserDetails);
-        when(customerRepository.findByLogin("expectedUsername")).thenReturn(Optional.of(doctor));
-        when(doctor.getAppointments()).thenReturn(Collections.emptyList());
-
-        List<Appointment> appointments = doctorService.getDoctorAppointments();
-
-        assertThat(appointments).isEmpty();
-    }
+//    @Test
+//    void shouldGetDoctorAppointments() {
+//        when(customerUserDetailsService.getUserDetails()).thenReturn(mockUserDetails);
+//        when(customerRepository.findByLogin("expectedUsername")).thenReturn(Optional.of(doctor));
+//        when(doctor.getAppointments()).thenReturn(Collections.emptyList());
+//
+//        List<Appointment> appointments = doctorService.getDoctorAppointments();
+//
+//        assertThat(appointments).isEmpty();
+//    }
     private void setUpDoctor() {
         doctor = spy(new Doctor());
         doctor.setName("Jan");

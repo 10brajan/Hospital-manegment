@@ -2,60 +2,44 @@ package com.example.zajecia7doktorki.service;
 
 import com.example.zajecia7doktorki.command.PatientUpdateCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
-import com.example.zajecia7doktorki.domain.Customer;
 import com.example.zajecia7doktorki.domain.Patient;
 import com.example.zajecia7doktorki.exception.LoginNotFoundException;
 import com.example.zajecia7doktorki.exception.PatientNotFoundException;
+import com.example.zajecia7doktorki.repository.AppointmentRepository;
 import com.example.zajecia7doktorki.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
+
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.*;
 
 @Service
 @RequiredArgsConstructor
 public class PatientService {
 
-    private static final String PATIENT = "PATIENT";
-    private static final String PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST = "Patient with this login does not exist";
-    private static final String LOGIN_DOES_NOT_EXIST = "Login does not exist";
-
-
     private final CustomerRepository customerRepository;
+
+    private final AppointmentRepository appointmentRepository;
 
     private final CustomerUserDetailsService userDetailsService;
 
 
     public Patient getPatient() {
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
-
-        return customerRepository.findByLogin(username)
-                .filter(Patient.class::isInstance)
-                .map(Patient.class::cast)
-                .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
-
+        return getPatient(getUsername());
     }
 
-    public List<Customer> getAllPatients() {
-        return customerRepository.findAllByUserType(PATIENT);
+    public Page<Patient> getAllPatients(Pageable pageable) {
+        return customerRepository.findAllByUserType(PATIENT, pageable)
+                .map(Patient.class::cast);
     }
 
     public Patient updatePatient(PatientUpdateCommand patientUpdateCommand) {
-//        Patient patientToUpdate = (Patient) customerRepository.findByLogin(userDetailsService.getUserDetails().getUsername())
-//                .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
-
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
-
-        Patient patientToUpdate = customerRepository.findByLogin(username)
-                .filter(Patient.class::isInstance)
-                .map(Patient.class::cast)
-                .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+        String username = getUsername();
+        Patient patientToUpdate = getPatient(username);
 
         Optional.ofNullable(patientUpdateCommand.getName()).ifPresent(patientToUpdate::setName);
         Optional.ofNullable(patientUpdateCommand.getSurname()).ifPresent(patientToUpdate::setSurname);
@@ -64,28 +48,29 @@ public class PatientService {
     }
 
     public void deletePatient() {
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
-
-        Patient patientToDelete = customerRepository.findByLogin(username)
-                .filter(Patient.class::isInstance)
-                .map(Patient.class::cast)
-                .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+        String username = getUsername();
+        Patient patientToDelete = getPatient(username);
 
         customerRepository.delete(patientToDelete);
     }
 
-    public List<Appointment> getPatientAppointments() {
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
+    public Page<Appointment> getPatientAppointments(Pageable pageable) {
+        String username = getUsername();
+        Patient patient = getPatient(username);
+
+        return appointmentRepository.findByPatient(patient, pageable);
+    }
+
+    private String getUsername() {
+        return Optional.ofNullable(userDetailsService.getUserDetails())
                 .map(UserDetails::getUsername)
                 .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
+    }
 
-        Patient patient = customerRepository.findByLogin(username)
+    private Patient getPatient(String username) {
+        return customerRepository.findByLogin(username)
                 .filter(Patient.class::isInstance)
                 .map(Patient.class::cast)
                 .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
-
-        return patient.getAppointments();
     }
 }

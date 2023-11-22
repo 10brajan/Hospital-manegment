@@ -1,9 +1,7 @@
 package com.example.zajecia7doktorki.service;
 
-import com.example.zajecia7doktorki.command.DoctorCommand;
 import com.example.zajecia7doktorki.command.DoctorUpdateCommand;
 import com.example.zajecia7doktorki.domain.Appointment;
-import com.example.zajecia7doktorki.domain.Customer;
 import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.domain.Patient;
 import com.example.zajecia7doktorki.exception.DoctorNotFoundException;
@@ -11,8 +9,11 @@ import com.example.zajecia7doktorki.exception.LoginNotFoundException;
 import com.example.zajecia7doktorki.exception.PatientNotFoundException;
 import com.example.zajecia7doktorki.exception.PermissionDeniedException;
 import com.example.zajecia7doktorki.model.HealthCondition;
+import com.example.zajecia7doktorki.repository.AppointmentRepository;
 import com.example.zajecia7doktorki.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -21,31 +22,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.*;
+
 @Service
 @RequiredArgsConstructor
 public class DoctorService {
-    private static final String DOCTOR = "DOCTOR";
-    private static final String DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST = "Doctor with this login does not exist";
-    private static final String LOGIN_DOES_NOT_EXIST = "Login does not exist";
-
-
     private final CustomerRepository customerRepository;
+    private final AppointmentRepository appointmentRepository;
 
     private final CustomerUserDetailsService userDetailsService;
 
     public Doctor getDoctor() {
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
-
-       return customerRepository.findByLogin(username)
-                .filter(Doctor.class::isInstance)
-                .map(Doctor.class::cast)
-                .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+        return getDoctor(getUsername());
     }
 
-    public List<Customer> getAllDoctors() {
-        return customerRepository.findAllByUserType(DOCTOR);
+    public Page<Doctor> getAllDoctors(Pageable pageable) {
+        return customerRepository.findAllByUserType(DOCTOR, pageable)
+                .map(Doctor.class::cast);
     }
 
     public Doctor updateDoctor(DoctorUpdateCommand doctorUpdateCommand) {
@@ -94,14 +87,8 @@ public class DoctorService {
     }
 
     public Set<Patient> getDoctorPatients() {
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
-
-        Doctor doctor = customerRepository.findByLogin(username)
-                .filter(Doctor.class::isInstance)
-                .map(Doctor.class::cast)
-                .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+        String username = getUsername();
+        Doctor doctor = getDoctor(username);
 
         List<Appointment> doctorAppointments = doctor.getAppointments();
         Set<Patient> patients = new HashSet<>();
@@ -109,6 +96,14 @@ public class DoctorService {
         doctorAppointments.forEach(appointment -> patients.add(appointment.getPatient()));
         return patients;
     }
+
+    public Page<Patient> getDoctorPatients(Pageable pageable) {
+        String username = getUsername();
+        Doctor doctor = getDoctor(username);
+
+        return appointmentRepository.findPatientsByDoctor(doctor, pageable);
+    }
+
 
     public void changeHealthCondition(Long patientId, String healthCondition) {
         Patient patient = (Patient) customerRepository.findByIdAndUserType(patientId, "PATIENT")
@@ -122,16 +117,23 @@ public class DoctorService {
         customerRepository.save(patient);
     }
 
-    public List<Appointment> getDoctorAppointments() {
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
+    public Page<Appointment> getDoctorAppointments(Pageable pageable) {
+        String username = getUsername();
+        Doctor doctor = getDoctor(username);
+
+        return appointmentRepository.findByDoctor(doctor, pageable);
+    }
+
+    private String getUsername() {
+        return Optional.ofNullable(userDetailsService.getUserDetails())
                 .map(UserDetails::getUsername)
                 .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
+    }
 
-        Doctor doctor = customerRepository.findByLogin(username)
+    private Doctor getDoctor(String username) {
+        return customerRepository.findByLogin(username)
                 .filter(Doctor.class::isInstance)
                 .map(Doctor.class::cast)
                 .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
-
-        return doctor.getAppointments();
     }
 }

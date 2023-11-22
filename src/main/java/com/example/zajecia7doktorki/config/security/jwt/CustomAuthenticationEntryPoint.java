@@ -13,16 +13,17 @@ import java.io.IOException;
 import java.util.Objects;
 
 import static com.example.zajecia7doktorki.constants.ConstantsUtil.APPLICATION_JSON_MEDIA_TYPE;
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.EXPIRED;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        if (Objects.nonNull(httpServletRequest.getAttribute("expired"))) {
+        if (Objects.nonNull(httpServletRequest.getAttribute(EXPIRED))) {
             ApiError apiError = ApiError.builder()
                     .httpStatus(HttpStatus.UNAUTHORIZED)
-                    .errors(String.valueOf(httpServletRequest.getAttribute("expired")))
+                    .errors(String.valueOf(httpServletRequest.getAttribute(EXPIRED)))
                     .build();
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             httpServletResponse.setContentType(APPLICATION_JSON_MEDIA_TYPE);

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.ACCESS_DENIED;
+
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     @Override
@@ -17,7 +19,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, "Access denied");
+        ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, ACCESS_DENIED);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");

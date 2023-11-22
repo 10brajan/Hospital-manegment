@@ -12,19 +12,21 @@ import com.example.zajecia7doktorki.repository.ActionRepository;
 import com.example.zajecia7doktorki.repository.AppointmentRepository;
 import com.example.zajecia7doktorki.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
 import java.util.Optional;
+
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.ADMIN_WITH_THIS_LOGIN_DOES_NOT_EXIST;
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.LOGIN_DOES_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
 public class AdminService {
-    private static final String LOGIN_DOES_NOT_EXIST = "Login does not exist";
 
-    private static final String ADMIN_WITH_THIS_LOGIN_DOES_NOT_EXIST = "Admin with this login does not exist";
 
     private final CustomerRepository customerRepository;
 
@@ -34,6 +36,14 @@ public class AdminService {
 
     private final CustomerUserDetailsService userDetailsService;
 
+    public Page<Admin> getAdmins(Pageable pageable) {
+        return customerRepository.findAllByUserType("ADMIN", pageable)
+                .map(Admin.class::cast);
+    }
+
+    public Admin getAdmin() {
+        return getAdmin(getUsername());
+    }
 
     public Admin updateAdmin(AdminUpdateCommand adminUpdateCommand) {
         String username = getUsername();
@@ -43,13 +53,6 @@ public class AdminService {
         Optional.ofNullable(adminUpdateCommand.getSurname()).ifPresent(adminToUpdate::setSurname);
         Optional.of(adminUpdateCommand.getAge()).filter(age -> age > 0).ifPresent(adminToUpdate::setAge);
         return customerRepository.save(adminToUpdate);
-    }
-
-    private Admin getAdmin(String username) {
-        return customerRepository.findByLogin(username)
-                .filter(Admin.class::isInstance)
-                .map(Admin.class::cast)
-                .orElseThrow(() -> new AdminNotFoundException(ADMIN_WITH_THIS_LOGIN_DOES_NOT_EXIST));
     }
 
     public void deleteCustomer(Long id) {
@@ -93,7 +96,6 @@ public class AdminService {
         String username = getUsername();
         Admin admin = getAdmin(username);
 
-        action.setAdmin(admin);
 
         action.setActionPerformed(enabled ? ActionPerformed.ENABLING_CUSTOMER : ActionPerformed.DISABLING_CUSTOMER);
 
@@ -101,12 +103,6 @@ public class AdminService {
         customerRepository.save(customer);
         actionRepository.save(action);
         customerRepository.save(admin);
-    }
-
-    private String getUsername() {
-        return Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
     }
 
     public void setLocked(Long id, boolean locked) {
@@ -140,10 +136,23 @@ public class AdminService {
         return action;
     }
 
-    public List<Action> getActions() {
+    public Page<Action> getActions(Pageable pageable) {
         String username = getUsername();
         Admin admin = getAdmin(username);
 
-        return admin.getMadeActions();
+        return actionRepository.findActionsByAdmin(admin, pageable);
+    }
+
+    private String getUsername() {
+        return Optional.ofNullable(userDetailsService.getUserDetails())
+                .map(UserDetails::getUsername)
+                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
+    }
+
+    private Admin getAdmin(String username) {
+        return customerRepository.findByLogin(username)
+                .filter(Admin.class::isInstance)
+                .map(Admin.class::cast)
+                .orElseThrow(() -> new AdminNotFoundException(ADMIN_WITH_THIS_LOGIN_DOES_NOT_EXIST));
     }
 }

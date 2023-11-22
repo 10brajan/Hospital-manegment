@@ -17,8 +17,11 @@ import static com.example.zajecia7doktorki.model.Role.USER;
 @Service
 @RequiredArgsConstructor
 public class RegisterService {
+
     private final CustomerRepository customerRepository;
+
     private final ValidationService validationService;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
 

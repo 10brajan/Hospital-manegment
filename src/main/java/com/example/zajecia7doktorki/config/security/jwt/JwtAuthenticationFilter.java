@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Objects;
 
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.*;
+
 @Service
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -33,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authenticationHeader = request.getHeader("Authorization");
         final String jsonWebToken;
         final String userLogin;
-        if (Objects.isNull(authenticationHeader) || !authenticationHeader.startsWith("Bearer ")) {
+        if (Objects.isNull(authenticationHeader) || !authenticationHeader.startsWith(BEARER)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -46,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } catch (ExpiredJwtException e) {
-            request.setAttribute("expired", e.getMessage());
+            request.setAttribute(EXPIRED, e.getMessage());
         }
         //poszukac jakwylapywactoken kiedy jest token expired lub nieprawidlowy
         filterChain.doFilter(request, response);
@@ -65,7 +67,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Customer userDetails = new Customer();
         Claims claims = jwtService.extractAllClaims(token);
         String[] jwtSubject = jwtService.extractUserLogin(token).split(",");
-        String role = (String) claims.get("role");
+        String role = (String) claims.get(ROLE);
         role = role.replace("Role.", "");
         userDetails.setId(Long.valueOf((jwtSubject[0])));
         userDetails.setLogin(jwtSubject[1]);

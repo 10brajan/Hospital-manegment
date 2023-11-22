@@ -4,16 +4,12 @@ import com.example.zajecia7doktorki.command.AdminCommand;
 import com.example.zajecia7doktorki.domain.Admin;
 import com.example.zajecia7doktorki.dto.AdminDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface AdminMapper {
 
-    AdminMapper INSTANCE = Mappers.getMapper(AdminMapper.class);
-
-//    @Mapping(target = "chuj", source = "kolba")
-    AdminDTO adminEnityToDTO(Admin admin);
+    //    @Mapping(target = "chuj", source = "kolba")
+    AdminDTO adminEntityToDTO(Admin admin);
 
     Admin adminCommandToAdminEntity(AdminCommand adminCommand);
 

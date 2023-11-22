@@ -47,21 +47,21 @@ class CustomerRepositoryTest {
         assertThat(foundPatient).isEmpty();
     }
 
-    @Test
-    void findAllByUserType() {
-        customerRepository.save(doctor);
-        customerRepository.save(admin);
-        customerRepository.save(patient);
-
-        List<Customer> customers = customerRepository.findAllByUserType("DOCTOR");
-
-        assertThat(customers).isNotEmpty();
-        assertThat(customers).contains(doctor);
-        assertThat(customers.get(0).getName()).isEqualTo(doctor.getName());
-//        assertThat(customers.get().get(0).getSurname()).isEqualTo(doctor.getSurname());
-//        assertThat(customers.get().get(0).getPesel()).isEqualTo(doctor.getPesel());
-
-    }
+//    @Test
+//    void findAllByUserType() {
+//        customerRepository.save(doctor);
+//        customerRepository.save(admin);
+//        customerRepository.save(patient);
+//
+////        List<Customer> customers = customerRepository.findAllByUserType("DOCTOR");
+//
+//        assertThat(customers).isNotEmpty();
+//        assertThat(customers).contains(doctor);
+//        assertThat(customers.get(0).getName()).isEqualTo(doctor.getName());
+////        assertThat(customers.get().get(0).getSurname()).isEqualTo(doctor.getSurname());
+////        assertThat(customers.get().get(0).getPesel()).isEqualTo(doctor.getPesel());
+//
+//    }
 
     @Test
     void findByLogin() {

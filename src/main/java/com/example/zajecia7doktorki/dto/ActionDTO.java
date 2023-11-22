@@ -1,6 +1,5 @@
 package com.example.zajecia7doktorki.dto;
 
-import com.example.zajecia7doktorki.domain.Admin;
 import com.example.zajecia7doktorki.model.ActionPerformed;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

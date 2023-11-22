@@ -1,6 +1,7 @@
 package com.example.zajecia7doktorki.config.security.jwt;
 
 import com.example.zajecia7doktorki.domain.Customer;
+import com.example.zajecia7doktorki.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -16,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.ROLE;
+
 @Service
 public class JwtService {
 
@@ -27,7 +30,7 @@ public class JwtService {
     public String generateToken(Customer customer) {
         return Jwts.builder()
                 .setSubject(String.format("%s,%s", customer.getId(), customer.getLogin()))
-                .claim("role", customer.getRole())
+                .claim(ROLE, customer.getRole())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRE_DURATION))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
@@ -37,7 +40,7 @@ public class JwtService {
 
     public boolean isTokenValid(String jsonWebToken, UserDetails userDetails) {
         String[] jwtSubject = extractUserLogin(jsonWebToken).split(",");
-        final String role = (String) extractClaim(jsonWebToken, claims -> claims.get("role"));
+        final String role = (String) extractClaim(jsonWebToken, claims -> claims.get(ROLE));
         return jwtSubject[1].equals(userDetails.getUsername())
                 && !isTokenExpired(jsonWebToken)
                 && role.equals(userDetails.getAuthorities().iterator().next().getAuthority());

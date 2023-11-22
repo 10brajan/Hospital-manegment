@@ -20,7 +20,6 @@ public class AppointmentDTO {
     private PatientAppointmentDTO patient;
 
     private DoctorAppointmentDTO doctor;
-    //dodac json.include non null
 
     private Status status;
 }

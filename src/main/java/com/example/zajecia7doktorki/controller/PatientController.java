@@ -2,8 +2,6 @@ package com.example.zajecia7doktorki.controller;
 
 import com.example.zajecia7doktorki.command.AppointmentCommand;
 import com.example.zajecia7doktorki.command.PatientUpdateCommand;
-import com.example.zajecia7doktorki.domain.Appointment;
-import com.example.zajecia7doktorki.domain.Patient;
 import com.example.zajecia7doktorki.dto.AppointmentDTO;
 import com.example.zajecia7doktorki.dto.PatientDTO;
 import com.example.zajecia7doktorki.mapping.AppointmentMapper;
@@ -11,12 +9,14 @@ import com.example.zajecia7doktorki.mapping.PatientMapper;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,22 +26,24 @@ public class PatientController {
     private final PatientService patientService;
 
     private final AppointmentService appointmentService;
+    private final PatientMapper patientMapper;
+    private final AppointmentMapper appointmentMapper;
 
     @GetMapping("/get")
-    public ResponseEntity<PatientDTO> findById() {
-        return new ResponseEntity<>(PatientMapper.INSTANCE.patientEnityToDTO(patientService.getPatient()), HttpStatus.OK);
+    public ResponseEntity<PatientDTO> getPatient() {
+        return new ResponseEntity<>(patientMapper.patientEntityToDTO(patientService.getPatient()), HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/getAll")
     //    dodac paginacje tutaj
-    public ResponseEntity<List<PatientDTO>> getPatients() {
-        return new ResponseEntity<>(patientService.getAllPatients().stream()
-                .map(patient -> PatientMapper.INSTANCE.patientEnityToDTO((Patient) patient)).toList(), HttpStatus.OK);
+    public ResponseEntity<Page<PatientDTO>> getPatients(@PageableDefault Pageable pageable) {
+        return new ResponseEntity<>(patientService.getAllPatients(pageable)
+                .map(patientMapper::patientEntityToDTO), HttpStatus.OK);
     }
 
     @PutMapping
     public ResponseEntity<PatientDTO> updatePatient(@RequestBody PatientUpdateCommand patientUpdateCommand) {
-        return new ResponseEntity<>(PatientMapper.INSTANCE.patientEnityToDTO
+        return new ResponseEntity<>(patientMapper.patientEntityToDTO
                 (patientService.updatePatient(patientUpdateCommand)), HttpStatus.OK);
     }
 
@@ -54,8 +56,8 @@ public class PatientController {
     @PutMapping("/makeAppointment/{doctorId}")
     public ResponseEntity<AppointmentDTO> createAppointment(@PathVariable("doctorId") Long doctorId,
                                                             @RequestBody @Valid AppointmentCommand appointmentCommand) {
-        return new ResponseEntity<>(AppointmentMapper.INSTANCE.appointmentEnityToDTO((appointmentService
-                .createAppointment(AppointmentMapper.INSTANCE.appointmentCommandToAppointmentEntity(appointmentCommand), doctorId))), HttpStatus.CREATED);
+        return new ResponseEntity<>(appointmentMapper.appointmentEntityToDTO((appointmentService
+                .createAppointment(appointmentMapper.appointmentCommandToAppointmentEntity(appointmentCommand), doctorId))), HttpStatus.CREATED);
     }
 
     @PutMapping("/appointments/cancel/{appointmentId}")
@@ -66,8 +68,8 @@ public class PatientController {
 
     @GetMapping("/appointments")
     //    dodac paginacje tutaj
-    public ResponseEntity<List<AppointmentDTO>> getPatientAppointments() {
-        return new ResponseEntity<>(patientService.getPatientAppointments().stream()
-                .map(AppointmentMapper.INSTANCE::appointmentEnityToDTO).toList(), HttpStatus.OK);
+    public ResponseEntity<Page<AppointmentDTO>> getPatientAppointments(@PageableDefault Pageable pageable) {
+        return new ResponseEntity<>(patientService.getPatientAppointments(pageable)
+                .map(appointmentMapper::appointmentEntityToDTO), HttpStatus.OK);
     }
 }
