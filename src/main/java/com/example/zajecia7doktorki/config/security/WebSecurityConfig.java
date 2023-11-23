@@ -74,6 +74,7 @@ public class WebSecurityConfig {
                                     authz
                                             .antMatchers(HttpMethod.POST, "/api/v1/register/**").permitAll()
                                             .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
+                                            .antMatchers( "/swagger-ui/index.html").permitAll()
                                             .antMatchers("/api/v1/admins/***").hasAuthority("ADMIN")
                                             .antMatchers("/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
                                             .antMatchers( "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")

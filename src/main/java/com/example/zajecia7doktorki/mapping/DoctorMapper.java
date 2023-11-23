@@ -6,7 +6,6 @@ import com.example.zajecia7doktorki.domain.Doctor;
 import com.example.zajecia7doktorki.dto.DoctorAppointmentDTO;
 import com.example.zajecia7doktorki.dto.DoctorDTO;
 import org.mapstruct.Mapper;
-
 @Mapper(componentModel = "spring")
 public interface DoctorMapper {
 

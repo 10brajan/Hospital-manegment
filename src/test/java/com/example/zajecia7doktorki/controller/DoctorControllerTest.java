@@ -162,12 +162,12 @@ class DoctorControllerTest {
     @WithUserDetails(value = "newDoctor", setupBefore = TestExecutionEvent.TEST_EXECUTION, userDetailsServiceBeanName = "userDetailsService")
     void shouldChangeHealthCondition() throws Exception {
         this.mockMvc.perform(put("/api/v1/doctors/patients/changeHealthCondition/{patientId}", patient.getId())
-                        .content("BAD"))
+                        .content("GOOD"))
                 .andDo(print())
                 .andExpect(status().isOk());
+        Patient changedPatient = (Patient) customerRepository.findById(patient.getId()).get();
 
-        //TODO TU NIE WIEM JAKSIE DOSTAC DO PACJENTA I SPRAWDZIC CZY ZMIENIONY ZOSTAL STAN ZDROWIA A TAK JAK NIZEJ TO NIE DZIALA
-        assertThat(patient.getHealthCondition()).isEqualTo(HealthCondition.GOOD);
+        assertThat(changedPatient.getHealthCondition()).isEqualTo(HealthCondition.GOOD);
     }
 
     @Test

@@ -145,6 +145,7 @@ class AdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
+
         assertTrue(customerRepository.findById(customer.getId()).get().getLocked());
     }
 
@@ -192,6 +193,7 @@ class AdminControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)));
+        //sprawdzic pierwsze pole
     }
 
     private Customer createTestCustomer() {

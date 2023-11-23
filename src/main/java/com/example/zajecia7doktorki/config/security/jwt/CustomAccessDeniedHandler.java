@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.example.zajecia7doktorki.constants.ConstantsUtil.ACCESS_DENIED;
+import static com.example.zajecia7doktorki.constants.ConstantsUtil.APPLICATION_JSON_MEDIA_TYPE;
 
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
@@ -21,7 +22,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         ObjectMapper mapper = new ObjectMapper();
         ApiError error = new ApiError(HttpStatus.UNAUTHORIZED, ACCESS_DENIED);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.setContentType("application/json");
+        response.setContentType(APPLICATION_JSON_MEDIA_TYPE);
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write(mapper.writeValueAsString(error));
     }

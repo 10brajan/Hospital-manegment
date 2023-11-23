@@ -6,6 +6,7 @@ import com.example.zajecia7doktorki.dto.AdminDTO;
 import com.example.zajecia7doktorki.mapping.ActionMapper;
 import com.example.zajecia7doktorki.mapping.AdminMapper;
 import com.example.zajecia7doktorki.service.AdminService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Admin controller", description = "Thanks to hospital api we can create a new admin")
 @RequestMapping("/api/v1/admins")
 public class AdminController {
 

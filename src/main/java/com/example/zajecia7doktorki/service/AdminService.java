@@ -49,9 +49,12 @@ public class AdminService {
         String username = getUsername();
         Admin adminToUpdate = getAdmin(username);
 
-        Optional.ofNullable(adminUpdateCommand.getName()).ifPresent(adminToUpdate::setName);
-        Optional.ofNullable(adminUpdateCommand.getSurname()).ifPresent(adminToUpdate::setSurname);
-        Optional.of(adminUpdateCommand.getAge()).filter(age -> age > 0).ifPresent(adminToUpdate::setAge);
+        Optional.ofNullable(adminUpdateCommand.getName())
+                .ifPresent(adminToUpdate::setName);
+        Optional.ofNullable(adminUpdateCommand.getSurname())
+                .ifPresent(adminToUpdate::setSurname);
+        Optional.of(adminUpdateCommand.getAge()).filter(age -> age > 0)
+                .ifPresent(adminToUpdate::setAge);
         return customerRepository.save(adminToUpdate);
     }
 
@@ -123,6 +126,7 @@ public class AdminService {
     }
 
     private static Action preparedActionObject(boolean actionPerformed, Customer customer, String attribute) {
+        //to mozna wytestowac
         Action action = new Action();
         action.setOldValue(String.valueOf(customer.getLocked()));
         action.setNewValue(String.valueOf(actionPerformed));

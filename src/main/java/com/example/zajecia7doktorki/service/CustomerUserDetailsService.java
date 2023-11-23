@@ -28,5 +28,6 @@ public class CustomerUserDetailsService implements UserDetailsService {
     public UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (UserDetails) authentication.getPrincipal();
+        //to by mozna bylo wytestowac
     }
 }

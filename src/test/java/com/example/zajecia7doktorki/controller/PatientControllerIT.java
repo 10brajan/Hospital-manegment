@@ -96,7 +96,6 @@ class PatientControllerIT {
     @Test
     @WithUserDetails(value = "newUser", setupBefore = TestExecutionEvent.TEST_EXECUTION, userDetailsServiceBeanName = "userDetailsService")
     void shouldGetAllPatients() throws Exception {
-
         this.mockMvc.perform(get("/api/v1/patients/getAll")
                         .param("size", "1")
                         .param("page", "0")
@@ -141,15 +140,12 @@ class PatientControllerIT {
         AppointmentCommand appointmentCommand = new AppointmentCommand();
         appointmentCommand.setDate(LocalDate.of(2023, 12, 16));
 
-
         this.mockMvc.perform(put("/api/v1/patients/makeAppointment/{doctorId}", doctor.getId())
                         .content(objectMapper.writeValueAsString(appointmentCommand))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isCreated());
-
-        //TODO TO JEST DO POPRAWY
 
     }
 

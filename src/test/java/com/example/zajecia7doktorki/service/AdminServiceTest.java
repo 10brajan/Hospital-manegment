@@ -29,12 +29,10 @@ import static org.mockito.Mockito.*;
 class AdminServiceTest {
     @Mock
     private CustomerRepository customerRepository;
-
     @InjectMocks
     private AdminService adminService;
     @Mock
     private CustomerUserDetailsService customerUserDetailsService;
-
     @Mock
     private ActionRepository actionRepository;
     private UserDetails mockUserDetails;
