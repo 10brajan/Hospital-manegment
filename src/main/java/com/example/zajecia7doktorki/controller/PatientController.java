@@ -8,6 +8,7 @@ import com.example.zajecia7doktorki.mapping.AppointmentMapper;
 import com.example.zajecia7doktorki.mapping.PatientMapper;
 import com.example.zajecia7doktorki.service.AppointmentService;
 import com.example.zajecia7doktorki.service.PatientService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Patient controller", description = "Thanks to hospital api we can create a new patient")
 @RequestMapping("/api/v1/patients")
 public class PatientController {
 

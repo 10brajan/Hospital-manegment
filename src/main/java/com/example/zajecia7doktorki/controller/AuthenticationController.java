@@ -3,6 +3,7 @@ package com.example.zajecia7doktorki.controller;
 import com.example.zajecia7doktorki.model.AuthenticationRequest;
 import com.example.zajecia7doktorki.model.AuthenticationResponse;
 import com.example.zajecia7doktorki.service.AuthenticationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Authentication controller", description = "Thanks to hospital api we can authenticate")
 @RequestMapping("/api/v1/auth")
 public class AuthenticationController {
 

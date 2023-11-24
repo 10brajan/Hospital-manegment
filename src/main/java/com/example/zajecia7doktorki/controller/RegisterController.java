@@ -10,6 +10,7 @@ import com.example.zajecia7doktorki.mapping.AdminMapper;
 import com.example.zajecia7doktorki.mapping.DoctorMapper;
 import com.example.zajecia7doktorki.mapping.PatientMapper;
 import com.example.zajecia7doktorki.service.RegisterService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Register controller", description = "Thanks to hospital api we can create a new admin")
 @RequestMapping("/api/v1/register")
 public class RegisterController {
     private final RegisterService registerService;

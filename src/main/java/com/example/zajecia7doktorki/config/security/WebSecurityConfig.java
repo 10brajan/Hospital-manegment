@@ -22,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Log4j2
 @Configuration
@@ -32,7 +33,33 @@ public class WebSecurityConfig {
 
     private final CustomAuthenticationEntryPoint entryPoint;
 
-    private final CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;private static final String[] AUTH_WHITELIST = {
+            // -- Swagger UI v2
+            "/v2/api-docs",
+            "v2/api-docs",
+            "/swagger-resources",
+            "swagger-resources",
+            "/swagger-resources/**",
+            "swagger-resources/**",
+            "/configuration/ui",
+            "configuration/ui",
+            "/configuration/security",
+            "configuration/security",
+            "/swagger-ui.html",
+            "swagger-ui.html",
+            "webjars/**",
+            // -- Swagger UI v3
+            "/v3/api-docs/**",
+            "v3/api-docs/**",
+            "/swagger-ui/**",
+            "swagger-ui/**",
+            // CSA Controllers
+            "/csa/api/token",
+            // Actuators
+            "/actuator/**",
+            "/health/**"
+    };
+
 
 
     @Bean
@@ -69,12 +96,17 @@ public class WebSecurityConfig {
             httpSecurity
                     .csrf() //> do poczytania co to jest
                     .disable()
-                    .authorizeRequests((authz) -> {
+                    .authorizeRequests(authz -> {
                                 try {
                                     authz
+//                                            .requestMatchers( new AntPathRequestMatcher("swagger-ui/**")).permitAll()
+//                                            .requestMatchers( new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
+//                                            .requestMatchers( new AntPathRequestMatcher("v3/api-docs/**")).permitAll()
+//                                            .requestMatchers( new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
+                                            .antMatchers( "/swagger-ui/**").permitAll()
+//                                            .antMatchers( "/swagger-ui.html").permitAll()
                                             .antMatchers(HttpMethod.POST, "/api/v1/register/**").permitAll()
                                             .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
-                                            .antMatchers( "/swagger-ui/index.html").permitAll()
                                             .antMatchers("/api/v1/admins/***").hasAuthority("ADMIN")
                                             .antMatchers("/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
                                             .antMatchers( "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")

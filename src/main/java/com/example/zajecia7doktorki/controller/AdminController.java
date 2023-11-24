@@ -6,6 +6,10 @@ import com.example.zajecia7doktorki.dto.AdminDTO;
 import com.example.zajecia7doktorki.mapping.ActionMapper;
 import com.example.zajecia7doktorki.mapping.AdminMapper;
 import com.example.zajecia7doktorki.service.AdminService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +30,10 @@ public class AdminController {
     private final ActionMapper actionMapper;
 
     @GetMapping("/get")
+    @Operation(summary = "Get admin details", responses = {
+            @ApiResponse(description = "Details of the admin", responseCode = "200",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AdminDTO.class)))})
     public ResponseEntity<AdminDTO> getAdmin() {
         return new ResponseEntity<>(adminMapper.adminEntityToDTO(adminService.getAdmin()), HttpStatus.OK);
     }
