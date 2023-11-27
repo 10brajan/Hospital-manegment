@@ -42,21 +42,8 @@ public class DoctorService {
     }
 
     public Doctor updateDoctor(DoctorUpdateCommand doctorUpdateCommand) {
-//        Doctor doctorToUpdate = (Doctor) customerRepository.findByIdAndUserType(id, DOCTOR)
-//                .orElseThrow(() -> new DoctorNotFoundException("Doctor with this id does not exist"));
-
-//        Doctor doctorToUpdate = (Doctor) customerRepository.findByLogin(userDetailsService.getUserDetails().getUsername())
-//                .orElseThrow(() -> new DoctorNotFoundException(MESSAGE));
-
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
-
-        Doctor doctorToUpdate = customerRepository.findByLogin(username)
-                .filter(Doctor.class::isInstance)
-                .map(Doctor.class::cast)
-                .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
-
+        String username = getUsername();
+        Doctor doctorToUpdate = getDoctor(username);
 
         Optional.ofNullable(doctorUpdateCommand.getName())
                 .ifPresent(doctorToUpdate::setName);
@@ -66,22 +53,13 @@ public class DoctorService {
                 .ifPresent(doctorToUpdate::setAge);
         Optional.ofNullable(doctorUpdateCommand.getSpecialization())
                 .ifPresent(doctorToUpdate::setSpecialization);
-//        Optional.ofNullable(doctorCommand.getLogin())
-//                .ifPresent(doctorToUpdate::setLogin);
-//        Optional.ofNullable(doctorCommand.getPassword())
-//                .ifPresent(doctorToUpdate::setPassword);
+
         return customerRepository.save(doctorToUpdate);
     }
 
     public void deleteDoctor() {
-        String username = Optional.ofNullable(userDetailsService.getUserDetails())
-                .map(UserDetails::getUsername)
-                .orElseThrow(() -> new LoginNotFoundException(LOGIN_DOES_NOT_EXIST));
-
-        Doctor doctorToDelete = customerRepository.findByLogin(username)
-                .filter(Doctor.class::isInstance)
-                .map(Doctor.class::cast)
-                .orElseThrow(() -> new DoctorNotFoundException(DOCTOR_WITH_THIS_LOGIN_DOES_NOT_EXIST));
+        String username = getUsername();
+        Doctor doctorToDelete = getDoctor(username);
 
         customerRepository.delete(doctorToDelete);
     }

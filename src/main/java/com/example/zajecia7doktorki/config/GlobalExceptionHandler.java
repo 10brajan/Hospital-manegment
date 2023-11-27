@@ -18,22 +18,6 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
-    //    @Override
-//    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-//                                                                  @NonNull HttpHeaders headers,
-//                                                                  @NonNull HttpStatus status,
-//                                                                  @NonNull WebRequest request) {
-//        Map<String, String> errorDetails = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getDefaultMessage();
-//            errorDetails.put(fieldName, errorMessage);
-//        });
-//        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, errorDetails);
-//        logger.error(ex.getMessage());
-//        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
-//    }
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   @NonNull HttpHeaders headers,

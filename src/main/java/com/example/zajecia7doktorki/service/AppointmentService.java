@@ -79,7 +79,7 @@ public class AppointmentService {
         Doctor doctor = getDoctor(username);
 
         if (!Objects.equals(appointment.getDoctor().getId(), doctor.getId())) {
-            throw new PermissionDeniedException("Doctor can only cancel their own appointments");
+            throw new PermissionDeniedException("Doctor can only success their own appointments");
         }
         appointment.setStatus(Status.SUCCESSFUL);
         appointmentRepository.save(appointment);
@@ -123,5 +123,4 @@ public class AppointmentService {
                 .map(Patient.class::cast)
                 .orElseThrow(() -> new PatientNotFoundException(PATIENT_WITH_THIS_LOGIN_DOES_NOT_EXIST));
     }
-
 }

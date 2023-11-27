@@ -39,8 +39,5 @@ public class Action {
     private String newValue;
 
     private String changedField;
-    //dodac pola co bylo zmienione, jesli bylto edit to jaka wartosc n jaka wartosc
-    //np pole locked zmienilo sie z false na true
-    //dodac mozliwosc dodania customera przez asdmina
-    //jak usune jakiegos customera allbo aappointment to zeby nie wyswietlalo co bylo edytowane
+
 }

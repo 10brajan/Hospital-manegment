@@ -73,21 +73,16 @@ class AdminServiceTest {
 
     @Test
     void deleteCustomer() {
-
-
         Long customerId = 1L;
         Customer customer = new Customer();
         Admin admin = new Admin();
 
-        // Konfiguracja mockowania
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
         when(customerUserDetailsService.getUserDetails()).thenReturn(admin);
         when(customerRepository.findByLogin("admin")).thenReturn(Optional.of(admin));
 
-        // Wykonanie
         adminService.deleteCustomer(customerId);
 
-        // Weryfikacja
         verify(customerRepository).delete(customer);
         verify(actionRepository).save(any(Action.class));
     }

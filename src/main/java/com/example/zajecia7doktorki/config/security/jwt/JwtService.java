@@ -1,7 +1,6 @@
 package com.example.zajecia7doktorki.config.security.jwt;
 
 import com.example.zajecia7doktorki.domain.Customer;
-import com.example.zajecia7doktorki.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,8 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 import static com.example.zajecia7doktorki.constants.ConstantsUtil.ROLE;
@@ -35,7 +32,6 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRE_DURATION))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
-        //postaraj sie zrobic lepiej generowanie tokenu
     }
 
     public boolean isTokenValid(String jsonWebToken, UserDetails userDetails) {

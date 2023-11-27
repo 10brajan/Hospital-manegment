@@ -1,13 +1,11 @@
 package com.example.zajecia7doktorki.config;
 
 
-
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RestController;
 
 @OpenAPIDefinition(
@@ -23,15 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
         )
 )
 public class OpenApiConfig {
-//    @Bean
-//    public GroupedOpenApi publicApi() {
-//        return GroupedOpenApi.builder()
-//                .group("rest")
-//                .pathsToMatch("/**")
-//                .addOpenApiMethodFilter(method -> {
-//                    Class<?> declaringClass = method.getDeclaringClass();
-//                    return declaringClass.isAnnotationPresent(RestController.class);
-//                })
-//                .build();
-//    }
+    @Bean
+    public GroupedOpenApi publicApi() {
+        return GroupedOpenApi.builder()
+                .group("rest")
+                .pathsToMatch("/**")
+                .addOpenApiMethodFilter(method -> {
+                    Class<?> declaringClass = method.getDeclaringClass();
+                    return declaringClass.isAnnotationPresent(RestController.class);
+                })
+                .build();
+    }
 }

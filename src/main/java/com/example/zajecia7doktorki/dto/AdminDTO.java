@@ -23,5 +23,4 @@ public class AdminDTO {
 
     private String login;
 
-
 }

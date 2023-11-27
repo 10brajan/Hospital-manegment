@@ -23,4 +23,5 @@ public class PatientDTO {
     private Role role;
 
     private String login;
+
 }

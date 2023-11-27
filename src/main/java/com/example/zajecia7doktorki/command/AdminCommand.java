@@ -15,10 +15,10 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AdminCommand {
-    @Size(min = 3, max = 20, message = "Your name should contains between 3 to 20 letters")
+    @Size(min = 3, max = 20, message = "Your name should contain between 3 to 20 letters")
     private String name;
 
-    @Size(min = 3, max = 20, message = "Your surname should contains between 3 to 20 letters")
+    @Size(min = 3, max = 20, message = "Your surname should contain between 3 to 20 letters")
     private String surname;
 
     @Min(value = 1, message = "Age should not be zero")

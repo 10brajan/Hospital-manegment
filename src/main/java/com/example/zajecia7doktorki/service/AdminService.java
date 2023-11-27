@@ -99,7 +99,6 @@ public class AdminService {
         String username = getUsername();
         Admin admin = getAdmin(username);
 
-
         action.setActionPerformed(enabled ? ActionPerformed.ENABLING_CUSTOMER : ActionPerformed.DISABLING_CUSTOMER);
 
         admin.getMadeActions().add(action);
@@ -126,7 +125,6 @@ public class AdminService {
     }
 
     private static Action preparedActionObject(boolean actionPerformed, Customer customer, String attribute) {
-        //to mozna wytestowac
         Action action = new Action();
         action.setOldValue(String.valueOf(customer.getLocked()));
         action.setNewValue(String.valueOf(actionPerformed));

@@ -21,16 +21,6 @@ import java.util.Collections;
 @AllArgsConstructor
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "userType", discriminatorType = DiscriminatorType.STRING)
-
-//Trzeba sie dowiedziec:
-// jak dziala dziedziczenie w springu -> DiscriminatorColumn, Inheritance() itp.
-// DiscriminatorType
-//Poczytac o ENtityListeners audytowanie tworzenia i dzialaniach na encji
-//@LastModifiedBy
-//@CreratedDate
-//@LastModifedDate
-//@CreatedBy
-//poczytac o AuditorAware
 public class Customer implements UserDetails, Serializable {
 
     @Id

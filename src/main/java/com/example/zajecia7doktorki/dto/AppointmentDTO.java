@@ -22,4 +22,5 @@ public class AppointmentDTO {
     private DoctorAppointmentDTO doctor;
 
     private Status status;
+
 }

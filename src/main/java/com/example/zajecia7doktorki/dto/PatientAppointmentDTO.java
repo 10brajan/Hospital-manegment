@@ -17,4 +17,5 @@ public class PatientAppointmentDTO {
     private int age;
 
     private String pesel;
+
 }

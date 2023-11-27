@@ -15,4 +15,5 @@ public class DoctorAppointmentDTO {
     private String surname;
 
     private String specialization;
+
 }

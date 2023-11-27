@@ -27,4 +27,5 @@ public class ActionDTO {
     private String newValue;
 
     private String changedField;
+
 }

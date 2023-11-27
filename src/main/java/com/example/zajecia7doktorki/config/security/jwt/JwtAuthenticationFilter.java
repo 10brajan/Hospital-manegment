@@ -50,7 +50,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (ExpiredJwtException e) {
             request.setAttribute(EXPIRED, e.getMessage());
         }
-        //poszukac jakwylapywactoken kiedy jest token expired lub nieprawidlowy
         filterChain.doFilter(request, response);
     }
 

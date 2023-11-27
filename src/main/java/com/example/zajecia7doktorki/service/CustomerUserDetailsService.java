@@ -20,7 +20,6 @@ public class CustomerUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-//        poczytaj o String.format()
         return customerRepository.findByLogin(login)
                 .orElseThrow(() -> new LoginNotFoundException(String.format(USER_NOT_FOUND, login)));
     }
@@ -28,6 +27,5 @@ public class CustomerUserDetailsService implements UserDetailsService {
     public UserDetails getUserDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return (UserDetails) authentication.getPrincipal();
-        //to by mozna bylo wytestowac
     }
 }

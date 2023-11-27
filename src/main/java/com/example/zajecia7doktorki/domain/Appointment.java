@@ -53,8 +53,4 @@ public class Appointment {
     @CreatedDate
     private LocalDate createdDate;
 
-    //createdBy i lastModifiedBy i version
-
-    //dodac pole createdDate
-
 }

@@ -25,6 +25,4 @@ public class DoctorDTO {
 
     private String login;
 
-    //przy wyswietlaniu appointmentow nie moze byc role login i pesel czyli zrobic nowe obiekty dto dla appointmentow i dla doctora i dla pacjenta
-    //ujedlilicic dla appoitnemtow
 }

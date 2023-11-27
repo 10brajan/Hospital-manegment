@@ -27,7 +27,6 @@ public class PatientService {
 
     private final CustomerUserDetailsService userDetailsService;
 
-
     public Patient getPatient() {
         return getPatient(getUsername());
     }
@@ -41,9 +40,13 @@ public class PatientService {
         String username = getUsername();
         Patient patientToUpdate = getPatient(username);
 
-        Optional.ofNullable(patientUpdateCommand.getName()).ifPresent(patientToUpdate::setName);
-        Optional.ofNullable(patientUpdateCommand.getSurname()).ifPresent(patientToUpdate::setSurname);
-        Optional.of(patientUpdateCommand.getAge()).filter(age -> age > 0).ifPresent(patientToUpdate::setAge);
+        Optional.ofNullable(patientUpdateCommand.getName())
+                .ifPresent(patientToUpdate::setName);
+        Optional.ofNullable(patientUpdateCommand.getSurname())
+                .ifPresent(patientToUpdate::setSurname);
+        Optional.of(patientUpdateCommand.getAge()).filter(age -> age > 0)
+                .ifPresent(patientToUpdate::setAge);
+
         return customerRepository.save(patientToUpdate);
     }
 

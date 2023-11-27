@@ -22,7 +22,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Log4j2
 @Configuration
@@ -33,7 +32,8 @@ public class WebSecurityConfig {
 
     private final CustomAuthenticationEntryPoint entryPoint;
 
-    private final CustomerRepository customerRepository;private static final String[] AUTH_WHITELIST = {
+    private final CustomerRepository customerRepository;
+    private static final String[] AUTH_WHITELIST = {
             // -- Swagger UI v2
             "/v2/api-docs",
             "v2/api-docs",
@@ -59,8 +59,6 @@ public class WebSecurityConfig {
             "/actuator/**",
             "/health/**"
     };
-
-
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -94,29 +92,24 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) {
         try {
             httpSecurity
-                    .csrf() //> do poczytania co to jest
+                    .csrf()
                     .disable()
                     .authorizeRequests(authz -> {
                                 try {
                                     authz
-//                                            .requestMatchers( new AntPathRequestMatcher("swagger-ui/**")).permitAll()
-//                                            .requestMatchers( new AntPathRequestMatcher("/swagger-ui/**")).permitAll()
-//                                            .requestMatchers( new AntPathRequestMatcher("v3/api-docs/**")).permitAll()
-//                                            .requestMatchers( new AntPathRequestMatcher("/v3/api-docs/**")).permitAll()
-                                            .antMatchers( "/swagger-ui/**").permitAll()
-//                                            .antMatchers( "/swagger-ui.html").permitAll()
+                                            .antMatchers(AUTH_WHITELIST).permitAll()
                                             .antMatchers(HttpMethod.POST, "/api/v1/register/**").permitAll()
                                             .antMatchers(HttpMethod.POST, "/api/v1/auth").permitAll()
                                             .antMatchers("/api/v1/admins/***").hasAuthority("ADMIN")
                                             .antMatchers("/api/v1/doctors/***").hasAnyAuthority("ADMIN", "USER")
-                                            .antMatchers( "/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
+                                            .antMatchers("/api/v1/patients/***").hasAnyAuthority("ADMIN", "USER")
                                             .anyRequest()
                                             .authenticated()
                                             .and()
                                             .sessionManagement()
-                                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) //-> o rodzajach SessionCreationPolicy i jak sie je wykorzystuje
+                                            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                                             .and()
-                                            .authenticationProvider(authenticationProvider()) // -> poczytaj o authenticationProvider
+                                            .authenticationProvider(authenticationProvider())
                                             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                                             .exceptionHandling()
                                             .authenticationEntryPoint(entryPoint)

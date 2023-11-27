@@ -14,5 +14,4 @@ public interface PatientMapper {
 
     PatientAppointmentDTO patientEntityToPatientAppointmentDTO(Patient patient);
 
-
 }

@@ -15,11 +15,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     boolean existsByPatientAndDoctorAndDate(Patient patient, Doctor doctor, LocalDate date);
 
-
     Page<Appointment> findByDoctor(Doctor doctor, Pageable pageable);
 
     Page<Appointment> findByPatient(Patient patient, Pageable pageable);
 
     @Query("SELECT a.patient FROM Appointment a WHERE a.doctor = :doctor")
     Page<Patient> findPatientsByDoctor(@Param("doctor") Doctor doctor, Pageable pageable);
+
 }

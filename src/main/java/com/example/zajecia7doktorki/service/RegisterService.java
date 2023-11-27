@@ -24,11 +24,11 @@ public class RegisterService {
 
     private final BCryptPasswordEncoder passwordEncoder;
 
-
     public Patient createPatient(Customer customer) {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         validate(customer);
         customer.setRole(USER);
+
         return (Patient) customerRepository.save(customer);
     }
 
@@ -36,6 +36,7 @@ public class RegisterService {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         validate(customer);
         customer.setRole(USER);
+
         return (Doctor) customerRepository.save(customer);
     }
 
@@ -43,6 +44,7 @@ public class RegisterService {
         customer.setPassword(passwordEncoder.encode(customer.getPassword()));
         validate(customer);
         customer.setRole(ADMIN);
+
         return (Admin) customerRepository.save(customer);
     }
 

@@ -183,7 +183,7 @@ class PatientControllerIT {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
-                .andExpect(result -> Assertions.assertEquals("Your name should contains between 3 to 20 letters",
+                .andExpect(result -> Assertions.assertEquals("Your name should contain between 3 to 20 letters",
                         (JsonPath.read(result.getResponse()
                                 .getContentAsString(), "$.errors.name"))));
     }
@@ -200,7 +200,7 @@ class PatientControllerIT {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException))
-                .andExpect(result -> Assertions.assertEquals("Your surname should contains between 3 to 20 letters",
+                .andExpect(result -> Assertions.assertEquals("Your surname should contain between 3 to 20 letters",
                         (JsonPath.read(result.getResponse()
                                 .getContentAsString(), "$.errors.surname"))));
     }

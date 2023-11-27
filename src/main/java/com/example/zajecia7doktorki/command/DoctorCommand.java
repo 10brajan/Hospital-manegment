@@ -16,10 +16,10 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class DoctorCommand {
 
-    @Size(min = 3, max = 20, message = "Your name should contains between 3 to 20 letters")
+    @Size(min = 3, max = 20, message = "Your name should contain between 3 to 20 letters")
     private String name;
 
-    @Size(min = 3, max = 20, message = "Your surname should contains between 3 to 20 letters")
+    @Size(min = 3, max = 20, message = "Your surname should contain between 3 to 20 letters")
     private String surname;
 
     @NotBlank(message = "Specialization should not be blank")
@@ -36,7 +36,5 @@ public class DoctorCommand {
 
     @NotBlank(message = "Password should not be blank")
     private String password;
-
-    //dodac osobny command dla update
 
 }
