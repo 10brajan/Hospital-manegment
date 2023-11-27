@@ -21,12 +21,13 @@ This system is crafted to streamline hospital administration work and enhance pa
 ## 🚀 How to Run
 
 1. Clone the repository:
+2. Navigate to the project folder:
+3. Run the application using Maven:
    ```sh
    git clone https://github.com/<your-username>/hospital-management-system.git
 
-   Navigate to the project folder:
     cd hospital-management-system
-   Run the application using Maven:
+
     ./mvnw spring-boot:run
 
   
