@@ -24,7 +24,7 @@ This system is crafted to streamline hospital administration work and enhance pa
 2. Navigate to the project folder:
 3. Run the application using Maven:
    ```sh
-   git clone https://github.com/<your-username>/hospital-management-system.git
+   git clone https://github.com/10brajan/hospital-management-system.git
 
     cd hospital-management-system
 
